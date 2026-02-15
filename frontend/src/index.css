@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* Soft & Warm Light Theme - Enhanced Comfort */
+        --background: 220 15% 94%;
+        /* Daha belirgin, yumuşak platin grisi (Gözü almaz) */
+        --foreground: 224 71% 4%;
+
+        --card: 0 0% 99.5%;
+        /* Kartlar neredeyse beyaz ama hafif kırık, öne çıksın diye */
+        --card-foreground: 224 71% 4%;
+
+        --popover: 0 0% 99.5%;
+        --popover-foreground: 224 71% 4%;
+
+        --primary: 262 80% 55%;
+        /* Moru biraz daha pastel yaptım */
+        --primary-foreground: 210 40% 98%;
+
+        --secondary: 220 15% 90%;
+        /* Butonlar arka plandan bir tık koyu olsun */
+        --secondary-foreground: 224 71% 4%;
+
+        --muted: 220 15% 90%;
+        --muted-foreground: 220 10% 40%;
+
+        --accent: 262 80% 94%;
+        /* Vurgular çok hafif mor */
+        --accent-foreground: 262 80% 55%;
+
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 220 13% 85%;
+        /* Çerçeveler biraz daha belirgin olsun ki beyazlıkta kaybolmasın */
+        --input: 220 13% 85%;
+        --ring: 262 80% 55%;
+
+        --radius: 1rem;
+    }
+
+    .dark {
+        --background: 222 47% 9%;
+        --foreground: 210 40% 91%;
+        --card: 222 47% 11%;
+        --card-foreground: 210 40% 91%;
+        --popover: 222 47% 11%;
+        --popover-foreground: 210 40% 91%;
+        --primary: 237 28% 65%;
+        --primary-foreground: 222 47% 11%;
+        --secondary: 217 19% 27%;
+        --secondary-foreground: 210 40% 91%;
+        --muted: 217 19% 27%;
+        --muted-foreground: 215 20% 65%;
+        --accent: 168 34% 56%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 52% 68%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217 19% 27%;
+        --input: 217 19% 27%;
+        --ring: 237 28% 65%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        font-family: 'Inter', 'Roboto', sans-serif;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    html,
+    body,
+    #root {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+@layer components {
+    .glass-card {
+        @apply backdrop-blur-2xl rounded-2xl shadow-lg;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .dark .glass-card {
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.2);
+    }
+
+    .btn-primary {
+        @apply text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md;
+        background: linear-gradient(135deg, #9FA8DA 0%, #7B7FD1 100%);
+    }
+
+    .btn-primary:hover {
+        @apply shadow-lg;
+        background: linear-gradient(135deg, #B3BAE5 0%, #9195DC 100%);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        @apply bg-gray-100 hover:bg-gray-200 dark:bg-slate-700/50 dark:hover:bg-slate-700 text-gray-800 dark:text-slate-200 border border-gray-200 dark:border-slate-600 px-6 py-3 rounded-xl transition-all backdrop-blur-sm;
+    }
+}
+
+.App {
+    min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-slate-600 rounded-lg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-slate-500;
+}

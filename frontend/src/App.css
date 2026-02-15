@@ -1,0 +1,125 @@
+.App {
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+.ambient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+  background: radial-gradient(ellipse at 50% 0%, rgba(159, 168, 218, 0.15) 0%, transparent 70%);
+}
+
+.dark .ambient-glow {
+  background: radial-gradient(ellipse at 50% 0%, rgba(123, 127, 209, 0.12) 0%, rgba(168, 52, 247, 0.08) 50%, transparent 100%);
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.ticker-tape:hover .animate-scroll {
+  animation-play-state: paused;
+}
+
+.cyberpunk-card {
+  @apply backdrop-blur-2xl rounded-2xl shadow-lg;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(203, 213, 225, 0.3);
+  position: relative;
+}
+
+.dark .cyberpunk-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.3);
+}
+
+.cyberpunk-btn {
+  @apply text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-md;
+  background: linear-gradient(135deg, #9FA8DA 0%, #7B7FD1 100%);
+}
+
+.cyberpunk-btn:hover {
+  background: linear-gradient(135deg, #B3BAE5 0%, #9195DC 100%);
+  box-shadow: 0 4px 20px rgba(123, 127, 209, 0.3);
+  transform: translateY(-1px);
+}
+
+.cyberpunk-input {
+  @apply bg-gray-50 dark:bg-slate-800/50 rounded-xl px-4 py-3;
+  border: 1.5px solid rgb(203, 213, 225);
+  transition: all 0.3s ease;
+}
+
+.dark .cyberpunk-input {
+  border-color: rgba(148, 163, 184, 0.2);
+  color: rgb(226, 232, 240);
+}
+
+.cyberpunk-input:focus {
+  outline: none;
+  border-color: rgb(159, 168, 218);
+  box-shadow: 0 0 0 3px rgba(159, 168, 218, 0.1);
+}
+
+.dark .cyberpunk-input:focus {
+  border-color: rgb(159, 168, 218);
+  box-shadow: 0 0 0 3px rgba(159, 168, 218, 0.15);
+}
+
+.cyberpunk-dialog {
+  @apply bg-white dark:bg-slate-800/95 backdrop-blur-xl rounded-2xl;
+  border: 1px solid rgb(203, 213, 225);
+}
+
+.dark .cyberpunk-dialog {
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 8px 40px rgba(15, 23, 42, 0.4);
+  color: rgb(226, 232, 240);
+}
+
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+.custom-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(203, 213, 225, 0.5) !important;
+  backdrop-filter: blur(12px);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  color: #1e293b !important;
+}
+
+.dark .custom-tooltip {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  color: #e2e8f0 !important;
+}
+
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.dark .stat-card:hover {
+  box-shadow: 0 12px 40px rgba(123, 127, 209, 0.15);
+}

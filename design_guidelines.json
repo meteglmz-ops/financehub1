@@ -1,0 +1,137 @@
+{
+  "typography": {
+    "font_family": {
+      "primary": "Inter, sans-serif",
+      "secondary": "Roboto, sans-serif"
+    },
+    "styles": {
+      "h1": "text-4xl md:text-5xl font-bold tracking-tight text-white",
+      "h2": "text-3xl font-semibold tracking-tight text-white",
+      "h3": "text-xl font-medium tracking-normal text-gray-200",
+      "body": "text-base font-normal text-gray-400 leading-relaxed",
+      "label": "text-xs font-semibold uppercase tracking-wider text-gray-500",
+      "number": "font-mono tracking-tight"
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": {
+        "primary": "#000000",
+        "secondary": "#050510",
+        "sidebar": "#020205"
+      },
+      "accent": {
+        "primary": "#000080",
+        "electric": "#007AFF",
+        "cyan": "#00F0FF",
+        "neon_green": "#00FF94",
+        "neon_red": "#FF0055"
+      },
+      "text": {
+        "primary": "#FFFFFF",
+        "secondary": "#94A3B8",
+        "muted": "#475569"
+      },
+      "border": {
+        "subtle": "rgba(255, 255, 255, 0.08)",
+        "highlight": "rgba(0, 122, 255, 0.3)"
+      }
+    },
+    "gradients": {
+      "primary_glow": "radial-gradient(circle at 50% 0%, rgba(0, 0, 128, 0.4) 0%, rgba(0, 0, 0, 0) 70%)",
+      "card_surface": "linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)",
+      "electric_text": "linear-gradient(to right, #007AFF, #00F0FF)"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": {
+      "default": "bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl",
+      "heavy": "bg-black/60 backdrop-blur-2xl border border-white/5 shadow-inner",
+      "light": "bg-white/5 backdrop-blur-md border border-white/10"
+    },
+    "shadows": {
+      "neon": "0 0 20px rgba(0, 122, 255, 0.15)",
+      "card": "0 8px 32px 0 rgba(0, 0, 0, 0.37)"
+    },
+    "borders": {
+      "default": "1px solid rgba(255, 255, 255, 0.08)",
+      "active": "1px solid rgba(0, 122, 255, 0.5)"
+    }
+  },
+  "layout": {
+    "structure": "flex h-screen bg-black overflow-hidden",
+    "sidebar": "w-64 hidden md:flex flex-col border-r border-white/10 bg-black/50 backdrop-blur-xl z-50",
+    "main_content": "flex-1 overflow-y-auto relative p-6 md:p-8 lg:p-12",
+    "grid_system": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+  },
+  "components": {
+    "cards": {
+      "base": "rounded-2xl p-6 relative overflow-hidden transition-all duration-300 hover:border-white/20 group",
+      "style": "glassmorphism.default"
+    },
+    "buttons": {
+      "primary": "bg-[#000080] hover:bg-[#0000A0] text-white px-6 py-3 rounded-full font-medium transition-all shadow-[0_0_15px_rgba(0,0,128,0.5)] hover:shadow-[0_0_25px_rgba(0,0,128,0.7)]",
+      "secondary": "bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-3 rounded-full transition-all backdrop-blur-sm",
+      "ghost": "text-gray-400 hover:text-white transition-colors"
+    },
+    "charts": {
+      "library": "recharts",
+      "style": {
+        "grid": "stroke-white/5",
+        "tooltip": "bg-black/80 border border-white/10 backdrop-blur-xl rounded-lg shadow-xl text-white",
+        "colors": ["#007AFF", "#00F0FF", "#00FF94", "#FF0055"]
+      }
+    },
+    "tables": {
+      "container": "w-full border-collapse",
+      "header": "text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-white/10 pb-4",
+      "row": "border-b border-white/5 hover:bg-white/5 transition-colors group",
+      "cell": "py-4 text-sm text-gray-300 group-hover:text-white transition-colors"
+    }
+  },
+  "image_urls": {
+    "backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1638489440786-0ab170d0ae9c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGRhcmslMjBuZW9uJTIwYmx1ZSUyMGZpbmFuY2lhbCUyMGRhdGElMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc2OTM3NDU3N3ww&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract dark neon blue 3D render - Use as subtle background texture with low opacity overlay",
+        "category": "texture"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1617565482419-288b4b6d5d7d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGRhcmslMjBuZW9uJTIwYmx1ZSUyMGZpbmFuY2lhbCUyMGRhdGElMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc2OTM3NDU3N3ww&ixlib=rb-4.1.0&q=85",
+        "description": "Blue and white light illustration - Use for login page or hero section",
+        "category": "hero"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "1. SETUP: Ensure Tailwind config has 'darkMode: class'. Add the custom colors (Deep Black #000000, Navy #000080) to tailwind.config.js.",
+    "2. GLOBAL STYLES: Apply 'bg-black text-white antialiased' to the body. Add a fixed background element with the 'primary_glow' gradient to create the ambient light effect.",
+    "3. LAYOUT: Implement the Sidebar (Left) and Main Content (Right) structure. The Sidebar must use the 'glassmorphism.sidebar' style.",
+    "4. DASHBOARD: Create a Bento Grid layout. Use 'recharts' for the charts. Ensure chart tooltips are custom styled (no default white background).",
+    "5. TRANSACTIONS: Build the transaction table with 'group-hover' effects. Use Lucide icons for categories.",
+    "6. EXPORT: Implement 'jspdf' and 'xlsx' for the export buttons in the Reports section.",
+    "7. INTERACTION: Add 'hover:scale-[1.02]' and 'active:scale-[0.98]' to all cards and buttons for tactile feel.",
+    "8. CRITICAL: Do not use pure white (#FFFFFF) for large backgrounds. Use it only for text and highlights. Use #000000 or #050510 for backgrounds."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: 'transition: all'. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add '.App { text-align: center; }' in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use 'sonner' for toasts. Sonner component are located in '/app/src/components/ui/sonner.tsx'"
+  ]
+}
