@@ -1,6 +1,6 @@
 fastapi==0.110.1
 uvicorn==0.25.0
-unused_dependency_removed=True
+
 cryptography>=42.0.8
 python-dotenv>=1.0.1
 firebase-admin>=1.0.1
@@ -22,7 +22,7 @@ requests>=2.31.0
 pandas>=2.2.0
 numpy>=1.26.0
 python-multipart>=0.0.9
-unused_dependency_removed=True
+
 yfinance>=0.2.37
 google-generativeai>=0.5.0
 
