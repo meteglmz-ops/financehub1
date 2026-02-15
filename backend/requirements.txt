@@ -10,9 +10,9 @@ pyjwt==2.8.0
 bcrypt==4.1.2
 passlib==1.7.4
 tzdata==2024.1
-requests==2.31.0
-pandas==2.2.1
-numpy==1.26.4
+requests>=2.31.0
+pandas>=2.2.0
+numpy>=1.26.0
 python-multipart==0.0.9
 cryptography==42.0.5
 yfinance==0.2.37
