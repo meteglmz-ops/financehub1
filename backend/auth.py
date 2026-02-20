@@ -1,94 +1,96 @@
 import os
+import json
+import logging
+from pathlib import Path
+
 import firebase_admin
 from firebase_admin import credentials, auth
-from fastapi import HTTPException, Security, Depends
+from fastapi import HTTPException, Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
-from pathlib import Path
-import logging
 
-# Load environment variables
+# ─── Environment & Logging ────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Initialize Logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize Firebase Admin
-cred_path = os.environ.get('FIREBASE_CREDENTIALS_PATH')
-cred_json = os.environ.get('FIREBASE_CREDENTIALS_JSON')
+# ─── Firebase Admin Initialization ───────────────────────────────────────────
+def _init_firebase():
+    """Initialize Firebase Admin SDK from env vars (called once at import time)."""
+    if firebase_admin._apps:
+        return  # Already initialized
 
-try:
-    if not firebase_admin._apps:
+    cred_json = os.environ.get('FIREBASE_CREDENTIALS_JSON')
+    cred_path = os.environ.get('FIREBASE_CREDENTIALS_PATH')
+
+    try:
         if cred_json:
-            import json
             cred_dict = json.loads(cred_json)
             cred = credentials.Certificate(cred_dict)
             firebase_admin.initialize_app(cred)
-            logger.info("✅ Firebase Admin initialized with FIREBASE_CREDENTIALS_JSON")
+            logger.info("✅ Firebase Admin initialized via FIREBASE_CREDENTIALS_JSON")
         elif cred_path and os.path.exists(cred_path):
             cred = credentials.Certificate(cred_path)
             firebase_admin.initialize_app(cred)
-            logger.info("✅ Firebase Admin initialized with credentials file")
+            logger.info(f"✅ Firebase Admin initialized via file: {cred_path}")
         else:
-            # Fallback for development/mocking or if env var not set properly
-            # In production, this should likely fail or use default google credentials
-            logger.warning("⚠️ No Firebase credentials found (PATH or JSON). Attempting default init (or mock mode).")
-            # firebase_admin.initialize_app() # Use this for Google Cloud default credentials
-            pass 
-except Exception as e:
-    logger.error(f"❌ Firebase Admin initialization error: {e}")
+            logger.warning(
+                "⚠️  No Firebase credentials found. "
+                "Set FIREBASE_CREDENTIALS_JSON or FIREBASE_CREDENTIALS_PATH. "
+                "Auth will fall back to unverified JWT decoding."
+            )
+    except Exception as exc:
+        logger.error(f"❌ Firebase Admin initialization failed: {exc}")
 
+
+_init_firebase()
+
+# ─── Auth ─────────────────────────────────────────────────────────────────────
 security = HTTPBearer()
 
-async def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
+
+async def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)) -> dict:
     """
-    Verifies the Firebase ID token passed in the Authorization header.
-    Returns the decoded token (user info) if valid.
+    Verify a Firebase ID token from the Authorization: Bearer <token> header.
+    Returns the decoded token dict on success, raises HTTP 401 on failure.
+
+    Mock bypass: set AUTH_MODE=mock in env (dev only) or pass token='mock-token'.
     """
     token = credentials.credentials
-    
-    # DEV MODE / MOCK BYPASS (Optional - remove for strict production)
-    # DEV MODE / MOCK BYPASS
+
+    # ── Dev mock bypass ───────────────────────────────────────────────────────
     if os.environ.get('AUTH_MODE') == 'mock' or token == "mock-token":
         return {"uid": "mock-user-id", "email": "demo@example.com"}
 
-    try:
-        # 1. Try standard Firebase Verification if initialized
-        if firebase_admin._apps:
-            decoded_token = auth.verify_id_token(token)
-            return decoded_token
-        else:
-             logger.warning("⚠️ Firebase Admin NOT initialized. Falling back to unverified decoding.")
-             raise Exception("Firebase not initialized")
-
-    except Exception as e:
-        logger.warning(f"Standard verification failed ({e}). Attempting unverified decode for development.")
-        # FALLBACK: Decode without verification (For Dev/Demo only)
+    # ── Standard Firebase verification ────────────────────────────────────────
+    if firebase_admin._apps:
         try:
-            import jwt
-            # Decode without verification to extract payload
-            decoded = jwt.decode(token, options={"verify_signature": False})
-            
-            # Map standard JWT fields to Firebase expectation
-            user_data = {
-                "uid": decoded.get("user_id") or decoded.get("sub"),
-                "email": decoded.get("email"),
-                "name": decoded.get("name"),
-                "picture": decoded.get("picture")
-            }
-            
-            if not user_data["uid"]:
-                 raise Exception("No UID found in token")
-                 
-            logger.info(f"🔓 Accepted unverified token for user: {user_data['email']}")
-            return user_data
-            
-        except Exception as decode_error:
-            logger.error(f"❌ Token decoding failed completely: {decode_error}")
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+            decoded = auth.verify_id_token(token)
+            return decoded
+        except Exception as exc:
+            logger.warning(f"Firebase verify_id_token failed: {exc}")
+            # Fall through to JWT decode fallback
+
+    # ── Fallback: decode without signature verification (dev / emergency) ─────
+    try:
+        import jwt as pyjwt
+        decoded = pyjwt.decode(token, options={"verify_signature": False})
+        uid = decoded.get("user_id") or decoded.get("sub")
+        if not uid:
+            raise ValueError("Token has no uid/sub claim")
+        logger.info(f"🔓 Accepted unverified token for UID: {uid}")
+        return {
+            "uid":     uid,
+            "email":   decoded.get("email"),
+            "name":    decoded.get("name"),
+            "picture": decoded.get("picture"),
+        }
+    except Exception as decode_err:
+        logger.error(f"❌ Token decode failed: {decode_err}")
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired authentication token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

@@ -1,19 +1,30 @@
-fastapi==0.110.1
-uvicorn==0.25.0
-python-dotenv==1.0.1
-firebase-admin==6.5.0
-pymongo==4.6.3
-motor==3.3.2
-pydantic==2.6.4
-email-validator==2.1.1
-pyjwt==2.8.0
-bcrypt==4.1.2
-passlib==1.7.4
-tzdata==2024.1
-requests>=2.31.0
+# FinanceHub Backend - Production Dependencies
+# Python 3.11+
+
+# Web Framework
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+
+# Database
+motor>=3.3.2
+pymongo>=4.6.3
+
+# Auth & Firebase
+firebase-admin>=6.5.0
+pyjwt>=2.8.0
+
+# Data Validation
+pydantic>=2.6.4
+python-dotenv>=1.0.1
+
+# Market Data
+yfinance>=0.2.37
 pandas>=2.2.0
 numpy>=1.26.0
-python-multipart==0.0.9
-cryptography==42.0.5
-yfinance==0.2.37
-google-generativeai==0.5.0
+
+# AI
+google-generativeai>=0.7.0
+
+# Timezone
+tzdata>=2024.1
