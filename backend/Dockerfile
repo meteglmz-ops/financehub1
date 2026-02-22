@@ -11,6 +11,9 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
 # Copy source code
 COPY . .
 
+# PRODUCTION GÜVENLİĞİ: Yerel .env dosyalarının Railway değişkenlerini ezmesini engellemek için siliyoruz
+RUN rm -f .env .env.*
+
 # Expose port (Railway sets $PORT automatically)
 EXPOSE 8000
 

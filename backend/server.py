@@ -24,8 +24,9 @@ from auth import verify_token
 
 # ─── Environment & Logging ────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).parent
-# override=False yaparak Railway'deki gerçek değişkenlerin ezilmesini önlüyoruz
-load_dotenv(ROOT_DIR / '.env', override=False)
+# PRODUCTION: .env yüklemeyi tamamen bırakıyoruz, Railway Variables kullanılacak.
+# Yerelde test ederken manuel yükleyebilirsin.
+# load_dotenv(ROOT_DIR / '.env', override=False)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -46,6 +47,7 @@ db     = client[db_name]
 
 # ─── API Keys ─────────────────────────────────────────────────────────────────
 # Mevcut tüm anahtarları logla (güvenlik için değerleri değil sadece isimleri)
+logger.info(f"🚀 Railway Service: {os.environ.get('RAILWAY_SERVICE_NAME', 'Unknown')}")
 logger.info(f"📋 Available Env Keys: {sorted(list(os.environ.keys()))}")
 
 GOOGLE_API_KEY = get_env_var('GOOGLE_API_KEY')
