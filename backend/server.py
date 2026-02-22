@@ -24,7 +24,9 @@ from auth import verify_token
 
 # ─── Environment & Logging ────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+# Sadece Railway dışında ise .env yükle, Railway değişkenlerini koru
+if not os.environ.get('RAILWAY_STATIC_URL'):
+    load_dotenv(ROOT_DIR / '.env')
 
 logging.basicConfig(
     level=logging.INFO,

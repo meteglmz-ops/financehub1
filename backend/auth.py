@@ -11,7 +11,8 @@ from dotenv import load_dotenv
 
 # ─── Environment & Logging ────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+if not os.environ.get('RAILWAY_STATIC_URL'):
+    load_dotenv(ROOT_DIR / '.env')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
