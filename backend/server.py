@@ -33,15 +33,22 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+def get_env_var(name, default=''):
+    """Case-insensitive environment variable lookup."""
+    return (os.environ.get(name) or os.environ.get(name.lower()) or default).strip()
+
 # ─── Database ─────────────────────────────────────────────────────────────────
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017').strip()
-db_name   = os.environ.get('DB_NAME', 'financehub').strip()
+mongo_url = get_env_var('MONGO_URL', 'mongodb://localhost:27017')
+db_name   = get_env_var('DB_NAME', 'financehub')
 
 client = AsyncIOMotorClient(mongo_url)
 db     = client[db_name]
 
 # ─── API Keys ─────────────────────────────────────────────────────────────────
-GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', '').strip()
+# Mevcut tüm anahtarları logla (güvenlik için değerleri değil sadece isimleri)
+logger.info(f"📋 Available Env Keys: {sorted(list(os.environ.keys()))}")
+
+GOOGLE_API_KEY = get_env_var('GOOGLE_API_KEY')
 logger.info(f"🔑 GOOGLE_API_KEY detected: {bool(GOOGLE_API_KEY)}")
 if GOOGLE_API_KEY:
     logger.info(f"🔑 Key prefix: {GOOGLE_API_KEY[:4]}...{GOOGLE_API_KEY[-4:]}")
@@ -51,7 +58,7 @@ app = FastAPI(title="FinanceHub API", version="1.0.0")
 
 
 # ─── CORS Configuration ───────────────────────────────────────────────────────
-_raw_origins = os.environ.get('CORS_ORIGINS', '').strip()
+_raw_origins = get_env_var('CORS_ORIGINS')
 _cors_origins = [o.strip() for o in _raw_origins.split(',') if o.strip()] if _raw_origins else []
 
 logger.info(f"🌐 Environment - CORS_ORIGINS: '{_raw_origins}'")

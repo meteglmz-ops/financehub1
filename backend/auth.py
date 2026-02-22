@@ -22,8 +22,11 @@ def _init_firebase():
     if firebase_admin._apps:
         return  # Already initialized
 
-    cred_json = os.environ.get('FIREBASE_CREDENTIALS_JSON')
-    cred_path = os.environ.get('FIREBASE_CREDENTIALS_PATH')
+    def get_env_var(name):
+        return os.environ.get(name) or os.environ.get(name.lower())
+
+    cred_json = get_env_var('FIREBASE_CREDENTIALS_JSON')
+    cred_path = get_env_var('FIREBASE_CREDENTIALS_PATH')
 
     logger.info(f"🔥 Firebase Auth Init - JSON present: {bool(cred_json)}, Path present: {bool(cred_path)}")
 
