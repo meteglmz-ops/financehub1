@@ -40,6 +40,12 @@ db_name   = os.environ.get('DB_NAME', 'financehub').strip()
 client = AsyncIOMotorClient(mongo_url)
 db     = client[db_name]
 
+# ─── API Keys ─────────────────────────────────────────────────────────────────
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', '').strip()
+logger.info(f"🔑 GOOGLE_API_KEY detected: {bool(GOOGLE_API_KEY)}")
+if GOOGLE_API_KEY:
+    logger.info(f"🔑 Key prefix: {GOOGLE_API_KEY[:4]}...{GOOGLE_API_KEY[-4:]}")
+
 # ─── App ──────────────────────────────────────────────────────────────────────
 app = FastAPI(title="FinanceHub API", version="1.0.0")
 
@@ -440,7 +446,7 @@ async def get_ai_analysis(request: AIAnalysisRequest, user_data: dict = Depends(
     logger.info(f"Indicators — Price: {current_price:.4f}, RSI: {rsi_val:.2f}")
 
     # ── 3. Gemini AI Analysis ─────────────────────────────────────────────────
-    api_key = os.environ.get("GOOGLE_API_KEY")
+    api_key = GOOGLE_API_KEY
 
     sentiment          = "Neutral"
     confidence         = 50
