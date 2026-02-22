@@ -47,8 +47,13 @@ db     = client[db_name]
 
 # ─── API Keys ─────────────────────────────────────────────────────────────────
 # Mevcut tüm anahtarları logla (güvenlik için değerleri değil sadece isimleri)
+all_keys = sorted(list(os.environ.keys()))
 logger.info(f"🚀 Railway Service: {os.environ.get('RAILWAY_SERVICE_NAME', 'Unknown')}")
-logger.info(f"📋 Available Env Keys: {sorted(list(os.environ.keys()))}")
+logger.info(f"📋 Available Env Keys: {all_keys}")
+
+# Fuzzy match for debugging
+fuzzy_matches = [k for k in all_keys if any(x in k.upper() for x in ['API', 'KEY', 'CORS', 'FIREBASE', 'GOOGLE'])]
+logger.info(f"🔍 Fuzzy Matched Keys (API/KEY/CORS/FIREBASE): {fuzzy_matches}")
 
 GOOGLE_API_KEY = get_env_var('GOOGLE_API_KEY')
 logger.info(f"🔑 GOOGLE_API_KEY detected: {bool(GOOGLE_API_KEY)}")
