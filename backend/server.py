@@ -42,11 +42,23 @@ db     = client[db_name]
 # ─── App ──────────────────────────────────────────────────────────────────────
 app = FastAPI(title="FinanceHub API", version="1.0.0")
 
+
+# ─── CORS Configuration ───────────────────────────────────────────────────────
+_raw_origins = os.environ.get('CORS_ORIGINS', '').strip()
+_cors_origins = [o.strip() for o in _raw_origins.split(',') if o.strip()] if _raw_origins else []
+
+logger.info(f"🌐 Environment - CORS_ORIGINS: '{_raw_origins}'")
+logger.info(f"🌐 Parsed Origins: {_cors_origins}")
+
+# In mock/dev mode OR if no origins configured → allow all (credentials off)
+_dev_mode = os.environ.get('AUTH_MODE') == 'mock' or not _cors_origins
+logger.info(f"🛠️ Dev Mode: {_dev_mode}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
+    allow_origins=["*"] if _dev_mode else _cors_origins,
+    allow_credentials=False if _dev_mode else True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
 )
 

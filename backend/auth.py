@@ -25,13 +25,17 @@ def _init_firebase():
     cred_json = os.environ.get('FIREBASE_CREDENTIALS_JSON')
     cred_path = os.environ.get('FIREBASE_CREDENTIALS_PATH')
 
+    logger.info(f"🔥 Firebase Auth Init - JSON present: {bool(cred_json)}, Path present: {bool(cred_path)}")
+
     try:
         if cred_json:
+            logger.info("🔥 Attempting to load Firebase credentials from JSON...")
             cred_dict = json.loads(cred_json)
             cred = credentials.Certificate(cred_dict)
             firebase_admin.initialize_app(cred)
             logger.info("✅ Firebase Admin initialized via FIREBASE_CREDENTIALS_JSON")
         elif cred_path and os.path.exists(cred_path):
+            logger.info(f"🔥 Attempting to load Firebase credentials from file: {cred_path}")
             cred = credentials.Certificate(cred_path)
             firebase_admin.initialize_app(cred)
             logger.info(f"✅ Firebase Admin initialized via file: {cred_path}")
