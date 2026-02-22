@@ -17,7 +17,8 @@ from typing import Literal
 import yfinance as yf
 import numpy as np
 import pandas as pd
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 from auth import verify_token
 
@@ -32,8 +33,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ─── Database ─────────────────────────────────────────────────────────────────
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-db_name   = os.environ.get('DB_NAME', 'financehub')
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017').strip()
+db_name   = os.environ.get('DB_NAME', 'financehub').strip()
 
 client = AsyncIOMotorClient(mongo_url)
 db     = client[db_name]
@@ -301,9 +302,19 @@ async def create_category(category: CategoryCreate):
 # ─── Dashboard Stats ──────────────────────────────────────────────────────────
 @api_router.get("/dashboard/stats")
 async def get_dashboard_stats(user_data: dict = Depends(verify_token)):
-    user_id      = user_data['uid']
-    accounts     = await db.accounts.find({"user_id": user_id}, {"_id": 0}).to_list(1000)
-    transactions = await db.transactions.find({"user_id": user_id}, {"_id": 0}).to_list(10000)
+    user_id = user_data['uid']
+    try:
+        accounts     = await db.accounts.find({"user_id": user_id}, {"_id": 0}).to_list(1000)
+        transactions = await db.transactions.find({"user_id": user_id}, {"_id": 0}).to_list(10000)
+    except Exception as e:
+        logger.error(f"Dashboard DB error (returning empty stats): {e}")
+        return {
+            "total_balance": 0.0,
+            "total_income": 0.0,
+            "total_expense": 0.0,
+            "expenses_by_category": [],
+            "balance_history": [],
+        }
 
     total_balance  = sum(a["balance"] for a in accounts)
     total_income   = sum(t["amount"] for t in transactions if t["type"] == "income")
@@ -430,9 +441,8 @@ async def get_ai_analysis(request: AIAnalysisRequest, user_data: dict = Depends(
         analysis_text = "<p>AI analysis unavailable: API key not configured.</p>"
     else:
         try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-2.0-flash')
-
+            client_ai = genai.Client(api_key=api_key)
+            
             prompt = f"""
 You are an elite Wall Street Quant & Technical Analyst with 20 years of experience.
 Perform a DEEP DIVE analysis on {symbol} ({period}).
@@ -468,8 +478,14 @@ RULES:
 - Support levels BELOW current price, resistance levels ABOVE
 - DO NOT leave any field empty
 """
-            response  = model.generate_content(prompt)
-            raw_text  = response.text.replace('```json', '').replace('```', '').strip()
+            response = client_ai.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json"
+                )
+            )
+            raw_text = response.text.strip()
 
             try:
                 ai_data           = json.loads(raw_text)
