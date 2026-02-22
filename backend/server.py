@@ -24,9 +24,8 @@ from auth import verify_token
 
 # ─── Environment & Logging ────────────────────────────────────────────────────
 ROOT_DIR = Path(__file__).parent
-# PRODUCTION: .env yüklemeyi tamamen bırakıyoruz, Railway Variables kullanılacak.
-# Yerelde test ederken manuel yükleyebilirsin.
-# load_dotenv(ROOT_DIR / '.env', override=False)
+# .env dosyasını yükle (Railway'de yoksa sessizce geçer, override=False ile gerçek ayarlar korunur)
+load_dotenv(ROOT_DIR / '.env', override=False)
 
 logging.basicConfig(
     level=logging.INFO,
