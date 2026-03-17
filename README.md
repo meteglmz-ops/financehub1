@@ -1,4 +1,18 @@
-# FinanceHub - Production-Grade Financial Super App
+# TRADXEAİ - Production-Grade Financial Super App
+
+# FinanceHub
+
+Modern finans takip ve yönetim uygulaması.
+
+## APK Çıktısı Alma (Android)
+
+Uygulamayı APK olarak paketlemek için:
+
+1. Ana dizindeki `APK_OLUSTUR.bat` dosyasını çalıştırın.
+2. Script frontend build'ini alacak ve Android projesini senkronize edecektir.
+3. Otomatik olarak Android Studio açılacaktır.
+4. Android Studio'da üst menüden **Build** > **Build Bundle(s) / APK(s)** > **Build APK(s)** yolunu izleyin.
+5. İşlem bittikten sonra sağ altta çıkan bildirimdeki **locate** yazısına tıklayarak APK dosyanıza ulaşabilirsiniz.
 
 A sophisticated financial management application with real-time market data, portfolio tracking, and multi-language support.
 

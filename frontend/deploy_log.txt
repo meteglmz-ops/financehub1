@@ -1,0 +1,114 @@
+﻿[2026-02-23T18:57:25.611Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[2026-02-23T18:57:25.615Z] > authorizing via signed-in user (ahmetmit34@gmail.com)
+[2026-02-23T18:57:25.619Z] [iam] checking project finance-20364 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[2026-02-23T18:57:25.623Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:25.624Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:25.628Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/finance-20364:testIamPermissions [none]
+[2026-02-23T18:57:25.628Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/finance-20364:testIamPermissions  x-goog-user-project=finance-20364
+[2026-02-23T18:57:25.629Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/finance-20364:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[2026-02-23T18:57:26.836Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/finance-20364:testIamPermissions 200
+[2026-02-23T18:57:26.837Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/finance-20364:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[2026-02-23T18:57:26.838Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:26.839Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:26.839Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/finance-20364 [none]
+[2026-02-23T18:57:27.432Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/finance-20364 200
+[2026-02-23T18:57:27.433Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/finance-20364 {"projectId":"finance-20364","projectNumber":"98956559819","displayName":"finance","name":"projects/finance-20364","resources":{"hostingSite":"finance-20364"},"state":"ACTIVE","etag":"1_308a7914-d53b-4e52-9067-f9b93d9285c6"}
+
+=== Deploying to 'finance-20364'...
+
+i  deploying hosting 
+[2026-02-23T18:57:27.446Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:27.446Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:27.446Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions [none]
+[2026-02-23T18:57:27.447Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[2026-02-23T18:57:29.791Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions 200
+[2026-02-23T18:57:29.792Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions {"name":"projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+i  hosting[finance-20364]: beginning deploy... 
+i  hosting[finance-20364]: found 12 files in build_new 
+[2026-02-23T18:57:29.842Z] [hosting] uploading with 200 concurrency
+[2026-02-23T18:57:29.844Z] [hosting] hash cache [YnVpbGRfbmV3] not populated
+[2026-02-23T18:57:31.482Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:31.483Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:31.485Z] [hosting] hash cache [YnVpbGRfbmV3] stored for 12 files
+[2026-02-23T18:57:31.486Z] [hosting][hash queue][FINAL] {"max":1631,"min":38,"avg":209.25,"active":0,"complete":12,"success":12,"errored":0,"retried":0,"total":12,"elapsed":1641}
+[2026-02-23T18:57:31.486Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53:populateFiles [none]
+[2026-02-23T18:57:31.487Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53:populateFiles {"files":{"/index.html":"b7b19a6ecfe495204659eccca5094423c28330c3f677bcb30efe33056cde4255","/asset-manifest.json":"57c8ed6b1b71e44f50a382177f1f042c239ded3663ca758d6ada957db11dcfc2","/static/js/main.fa68d902.js.LICENSE.txt":"f4b3f2c469e0a43e195f82f67fddc69a94f98ec69bd2f434caa8d60fe61e3f56","/static/js/977.240addac.chunk.js.LICENSE.txt":"a0fc519b9d2c714037eac8999e4d3288a6dbb222ac8377dcdc72a7bf27db2a4a","/static/js/977.240addac.chunk.js":"bd8b046bfbba6737ab294d3c15d091eebe5ccdc5d0a64bf2f5cb866683714324","/static/css/main.b1ccf3fc.css.map":"3aad897648712fa94ace10d9bd055cdc6167de9188f9b8ed0a1992182abc6a1f","/static/css/main.b1ccf3fc.css":"0a25ec3d09b2243760c5c6f6b1ca812d65fdfd36a93d66ad7d4f99343fb94b80","/static/js/977.240addac.chunk.js.map":"a8d2d99e8dfca7f90b8a03ab7f594abb2aecddb7416d4a338a085fc20abad78c","/static/js/455.38e3e59b.chunk.js":"d44efd9d9e95b447bd1c9f8611d501bf24485f4669fd7da745a10bdb2f5892fa","/static/js/455.38e3e59b.chunk.js.map":"f1465fa5b017ee91752253d9271a0b9825278a6f2aafc61eb9d31b3c6cca323d","/static/js/main.fa68d902.js":"1c86b8665aa1bf015acfdafa29e7cb784d039f99144018b483c7f3450c634dd5","/static/js/main.fa68d902.js.map":"746543d8b757abe0f469daab10fe12fd14771ac6109ce3c928bfeda5eef030a1"}}
+i  hosting: adding files to version [0/12] (0%) 
+[2026-02-23T18:57:32.679Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53:populateFiles 200
+[2026-02-23T18:57:32.679Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53:populateFiles {"uploadRequiredHashes":["57c8ed6b1b71e44f50a382177f1f042c239ded3663ca758d6ada957db11dcfc2","746543d8b757abe0f469daab10fe12fd14771ac6109ce3c928bfeda5eef030a1","1c86b8665aa1bf015acfdafa29e7cb784d039f99144018b483c7f3450c634dd5","b7b19a6ecfe495204659eccca5094423c28330c3f677bcb30efe33056cde4255"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files"}
+[2026-02-23T18:57:32.680Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.681Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.681Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.681Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.682Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.682Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.683Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.683Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:32.683Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/57c8ed6b1b71e44f50a382177f1f042c239ded3663ca758d6ada957db11dcfc2 [none]
+[2026-02-23T18:57:32.683Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/57c8ed6b1b71e44f50a382177f1f042c239ded3663ca758d6ada957db11dcfc2 [stream]
+[2026-02-23T18:57:32.686Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/746543d8b757abe0f469daab10fe12fd14771ac6109ce3c928bfeda5eef030a1 [none]
+[2026-02-23T18:57:32.687Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/746543d8b757abe0f469daab10fe12fd14771ac6109ce3c928bfeda5eef030a1 [stream]
+[2026-02-23T18:57:32.690Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/1c86b8665aa1bf015acfdafa29e7cb784d039f99144018b483c7f3450c634dd5 [none]
+[2026-02-23T18:57:32.690Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/1c86b8665aa1bf015acfdafa29e7cb784d039f99144018b483c7f3450c634dd5 [stream]
+[2026-02-23T18:57:32.693Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/b7b19a6ecfe495204659eccca5094423c28330c3f677bcb30efe33056cde4255 [none]
+[2026-02-23T18:57:32.693Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/b7b19a6ecfe495204659eccca5094423c28330c3f677bcb30efe33056cde4255 [stream]
+[2026-02-23T18:57:32.696Z] [hosting][populate queue][FINAL] {"max":1202,"min":1202,"avg":1202,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":1215}
+[2026-02-23T18:57:32.696Z] [hosting] uploads queued: 4
+i  hosting: uploading new files [0/4] (0%) 
+[2026-02-23T18:57:34.113Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/57c8ed6b1b71e44f50a382177f1f042c239ded3663ca758d6ada957db11dcfc2 200
+[2026-02-23T18:57:34.113Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/57c8ed6b1b71e44f50a382177f1f042c239ded3663ca758d6ada957db11dcfc2 [stream]
+[2026-02-23T18:57:34.185Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/b7b19a6ecfe495204659eccca5094423c28330c3f677bcb30efe33056cde4255 200
+[2026-02-23T18:57:34.185Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/b7b19a6ecfe495204659eccca5094423c28330c3f677bcb30efe33056cde4255 [stream]
+i  hosting: uploading new files [2/4] (50%) 
+[2026-02-23T18:57:36.001Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/1c86b8665aa1bf015acfdafa29e7cb784d039f99144018b483c7f3450c634dd5 200
+[2026-02-23T18:57:36.001Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/1c86b8665aa1bf015acfdafa29e7cb784d039f99144018b483c7f3450c634dd5 [stream]
+i  hosting: uploading new files [3/4] (75%) 
+[2026-02-23T18:57:39.578Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/746543d8b757abe0f469daab10fe12fd14771ac6109ce3c928bfeda5eef030a1 200
+[2026-02-23T18:57:39.579Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/finance-20364/versions/000fffb616cbcf53/files/746543d8b757abe0f469daab10fe12fd14771ac6109ce3c928bfeda5eef030a1 [stream]
+[2026-02-23T18:57:39.579Z] [hosting][upload queue][FINAL] {"max":6898,"min":1434,"avg":3289,"active":0,"complete":4,"success":4,"errored":0,"retried":0,"total":4,"elapsed":6899}
+i  hosting: upload complete 
++  hosting[finance-20364]: file upload complete 
+[2026-02-23T18:57:39.580Z] [hosting] deploy completed after 9781ms
+[2026-02-23T18:57:39.581Z] [
+  {
+    "config": {
+      "public": "build_new",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "finance-20364"
+    },
+    "version": "projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53"
+  }
+]
+i  hosting[finance-20364]: finalizing version... 
+[2026-02-23T18:57:39.584Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:39.585Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:39.585Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions/000fffb616cbcf53 updateMask=status%2Cconfig
+[2026-02-23T18:57:39.585Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions/000fffb616cbcf53 {"status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]}}
+[2026-02-23T18:57:41.404Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions/000fffb616cbcf53 200
+[2026-02-23T18:57:41.404Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/versions/000fffb616cbcf53 {"name":"projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-02-23T18:57:28.812821Z","createUser":{"email":"ahmetmit34@gmail.com"},"finalizeTime":"2026-02-23T18:57:41.439448Z","finalizeUser":{"email":"ahmetmit34@gmail.com"}}
+[2026-02-23T18:57:41.404Z] [hosting] finalized version for finance-20364:[object Object]
++  hosting[finance-20364]: version finalized 
+i  hosting[finance-20364]: releasing new version... 
+[2026-02-23T18:57:41.405Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:41.405Z] Checked if tokens are valid: true, expires at: 1771874733433
+[2026-02-23T18:57:41.406Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/channels/live/releases versionName=projects%2F98956559819%2Fsites%2Ffinance-20364%2Fversions%2F000fffb616cbcf53
+[2026-02-23T18:57:41.406Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/channels/live/releases {}
+[2026-02-23T18:57:42.821Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/channels/live/releases 200
+[2026-02-23T18:57:42.821Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/finance-20364/channels/live/releases {"name":"projects/98956559819/sites/finance-20364/channels/live/releases/1771873061940000","version":{"name":"projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-02-23T18:57:28.812821Z","createUser":{"email":"ahmetmit34@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocJBg5R7oReakX7Xg821yd6UPhWHudS7rC8g42RBQ478whGDnbvH"},"finalizeTime":"2026-02-23T18:57:41.439448Z","finalizeUser":{"email":"ahmetmit34@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocJBg5R7oReakX7Xg821yd6UPhWHudS7rC8g42RBQ478whGDnbvH"}},"type":"DEPLOY","releaseTime":"2026-02-23T18:57:41.940Z","releaseUser":{"email":"ahmetmit34@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocJBg5R7oReakX7Xg821yd6UPhWHudS7rC8g42RBQ478whGDnbvH"}}
+[2026-02-23T18:57:42.821Z] [hosting] release: {"name":"projects/98956559819/sites/finance-20364/channels/live/releases/1771873061940000","version":{"name":"projects/98956559819/sites/finance-20364/versions/000fffb616cbcf53","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-02-23T18:57:28.812821Z","createUser":{"email":"ahmetmit34@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocJBg5R7oReakX7Xg821yd6UPhWHudS7rC8g42RBQ478whGDnbvH"},"finalizeTime":"2026-02-23T18:57:41.439448Z","finalizeUser":{"email":"ahmetmit34@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocJBg5R7oReakX7Xg821yd6UPhWHudS7rC8g42RBQ478whGDnbvH"}},"type":"DEPLOY","releaseTime":"2026-02-23T18:57:41.940Z","releaseUser":{"email":"ahmetmit34@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocJBg5R7oReakX7Xg821yd6UPhWHudS7rC8g42RBQ478whGDnbvH"}}
++  hosting[finance-20364]: release complete 
+
++  Deploy complete! 
+
+Project Console: https://console.firebase.google.com/project/finance-20364/overview
+Hosting URL: https://finance-20364.web.app

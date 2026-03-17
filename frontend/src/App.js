@@ -14,6 +14,7 @@ import Tools from './pages/Tools';
 import AIAnalysis from './pages/AIAnalysis';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Landing from './pages/Landing';
 import { Toaster } from 'sonner';
 import './App.css';
 
@@ -41,9 +42,13 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-          <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-          <Route path="/" element={<PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>} />
+          {/* Public Routes */}
+          <Route path="/" element={!user ? <Landing /> : <Navigate to="/dashboard" />} />
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+          <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+          
+          {/* Private Routes */}
+          <Route path="/dashboard" element={<PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>} />
           <Route path="/accounts" element={<PrivateRoute><Layout><Accounts /></Layout></PrivateRoute>} />
           <Route path="/transactions" element={<PrivateRoute><Layout><Transactions /></Layout></PrivateRoute>} />
           <Route path="/reports" element={<PrivateRoute><Layout><Reports /></Layout></PrivateRoute>} />
@@ -53,6 +58,9 @@ function App() {
           <Route path="/calendar" element={<PrivateRoute><Layout><Calendar /></Layout></PrivateRoute>} />
           <Route path="/tools" element={<PrivateRoute><Layout><Tools /></Layout></PrivateRoute>} />
           <Route path="/ai-analysis" element={<PrivateRoute><Layout><AIAnalysis /></Layout></PrivateRoute>} />
+          
+          {/* Catch-all route to redirect back if not matched */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" theme="system" />

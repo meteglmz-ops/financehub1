@@ -1,5 +1,5 @@
 @echo off
-title FinanceHub - Yerel Test
+title TRADXEAİ - Yerel Test
 color 0A
 echo.
 echo  ================================================
@@ -9,14 +9,14 @@ echo.
 
 REM --- Backend Kontrol ---
 echo  [1/2] Backend baslatiliyor (port 8000)...
-start "FinanceHub BACKEND" cmd /k "cd /d %~dp0backend && set MONGO_URL=mongodb://localhost:27017 && set DB_NAME=financehub && set AUTH_MODE=mock && set CORS_ORIGINS=http://localhost:3000 && venv2\Scripts\uvicorn.exe server:app --host 127.0.0.1 --port 8000 --reload"
+start "TRADXEAİ BACKEND" cmd /k "cd /d %~dp0backend && set MONGO_URL=mongodb://localhost:27017 && set DB_NAME=financehub && set AUTH_MODE=mock && set CORS_ORIGINS=http://localhost:3000 && venv\Scripts\python.exe -m uvicorn server:app --host 0.0.0.0 --port 8000 --reload"
 
 REM --- Kisa bekleme ---
 timeout /t 3 /nobreak >nul
 
 REM --- Frontend Kontrol ---
 echo  [2/2] Frontend baslatiliyor (port 3000)...
-start "FinanceHub FRONTEND" cmd /k "cd /d %~dp0frontend && npm start"
+start "TRADXEAİ FRONTEND" cmd /k "cd /d %~dp0frontend && npm start"
 
 REM --- Tarayici ---
 echo.
