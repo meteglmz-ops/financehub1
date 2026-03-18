@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { auth } from '../firebaseConfig';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const BACKEND_URL = IS_LOCAL
+    ? 'http://localhost:8000'
+    : 'https://financehub-backend-production.up.railway.app';
 
 const api = axios.create({
     baseURL: `${BACKEND_URL}/api`,
