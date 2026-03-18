@@ -382,7 +382,7 @@ export default function AIAnalysis() {
                                     result.sentiment === 'Bearish' ? <TrendingDown size={32} className="text-rose-500" /> :
                                     <MinusCircle size={32} className="text-gray-500" />}
                                 <div>
-                                    <h2 className="text-2xl font-black text-gray-900 dark:text-white">{result.symbol}</h2>
+                                    <h2 className="text-2xl font-black" style={{ color: '#111111' }}>{result.symbol}</h2>
                                     <span className={`text-lg font-bold ${parseFloat(result.change_24h) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                                         {parseFloat(result.change_24h) >= 0 ? '+' : ''}{result.change_24h}% (24s)
                                     </span>
