@@ -161,16 +161,16 @@ const TradingViewWidget = ({ symbol }) => {
 
 // Visual price level bar component
 const PriceLevelBar = ({ label, value, color, bgColor, icon: Icon, percent }) => (
-    <div className={`flex items-center gap-3 p-3 rounded-xl border ${bgColor}`}>
-        <div className={`p-1.5 rounded-lg ${color} bg-white`}>
+    <div className={`flex items-center gap-2 p-2.5 md:p-3 rounded-xl border ${bgColor}`}>
+        <div className={`p-1.5 rounded-lg ${color} bg-white flex-shrink-0`}>
             <Icon size={16} />
         </div>
         <div className="flex-1 min-w-0">
-            <div className={`text-xs font-bold uppercase tracking-wider ${color} truncate`}>{label}</div>
-            <div className="text-sm font-black text-gray-800 font-mono">{value || '---'}</div>
+            <div className={`text-[10px] md:text-xs font-bold uppercase tracking-wider ${color} truncate`}>{label}</div>
+            <div className="text-xs md:text-sm font-black text-gray-800 font-mono truncate">{value || '---'}</div>
         </div>
         {percent !== undefined && (
-            <div className={`text-xs font-bold ${color} whitespace-nowrap`}>{percent > 0 ? '+' : ''}{percent?.toFixed(1)}%</div>
+            <div className={`text-[10px] md:text-xs font-bold ${color} whitespace-nowrap flex-shrink-0`}>{percent > 0 ? '+' : ''}{percent?.toFixed(1)}%</div>
         )}
     </div>
 );
@@ -406,9 +406,9 @@ export default function AIAnalysis() {
                         {result.signal && (
                             <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-white/10 shadow-sm p-5">
                                 <h3 className="text-base font-black text-gray-800 dark:text-white mb-4 flex items-center gap-2 uppercase tracking-wide">
-                                    <Zap size={18} className="text-primary" /> İşlem Sinyalleri & Fiyat Seviyeleri
+                                    <Zap size={18} className="text-primary flex-shrink-0" /> İşlem Sinyalleri & Fiyat Seviyeleri
                                 </h3>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 mb-4">
                                     <PriceLevelBar
                                         label="Giriş Noktası" value={result.signal.entry_price}
                                         color="text-blue-600" bgColor="bg-blue-50 border-blue-200"
