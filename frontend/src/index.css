@@ -6,66 +6,64 @@
 
 @layer base {
     :root {
-        /* Premium Dark Theme - Wall Street / Web3 Aesthetic */
-        --background: 0 0% 3%;     /* #080808 Very dark almost black */
-        --foreground: 0 0% 98%;    /* White text */
+        /* Soft & Warm Light Theme - Enhanced Comfort */
+        --background: 220 15% 94%;
+        /* Daha belirgin, yumuşak platin grisi (Gözü almaz) */
+        --foreground: 224 71% 4%;
 
-        --card: 0 0% 5%;           /* #0d0d0d Slightly lighter than background */
-        --card-foreground: 0 0% 98%;
+        --card: 0 0% 99.5%;
+        /* Kartlar neredeyse beyaz ama hafif kırık, öne çıksın diye */
+        --card-foreground: 224 71% 4%;
 
-        --popover: 0 0% 5%;
-        --popover-foreground: 0 0% 98%;
+        --popover: 0 0% 99.5%;
+        --popover-foreground: 224 71% 4%;
 
-        --primary: 188 86% 53%;    /* Cyan-400 */
-        --primary-foreground: 0 0% 0%;
+        --primary: 262 80% 55%;
+        /* Moru biraz daha pastel yaptım */
+        --primary-foreground: 210 40% 98%;
 
-        --secondary: 0 0% 10%;     /* Dark gray */
-        --secondary-foreground: 0 0% 98%;
+        --secondary: 220 15% 90%;
+        /* Butonlar arka plandan bir tık koyu olsun */
+        --secondary-foreground: 224 71% 4%;
 
-        --muted: 0 0% 15%;         
-        --muted-foreground: 0 0% 64%;
+        --muted: 220 15% 90%;
+        --muted-foreground: 220 10% 40%;
 
-        --accent: 188 86% 53%;     /* Cyan-400 */
-        --accent-foreground: 0 0% 0%;
+        --accent: 262 80% 94%;
+        /* Vurgular çok hafif mor */
+        --accent-foreground: 262 80% 55%;
 
         --destructive: 0 84% 60%;
-        --destructive-foreground: 0 0% 98%;
+        --destructive-foreground: 210 40% 98%;
 
-        --border: 0 0% 15%;        /* Subtle dark borders */
-        --input: 0 0% 15%;
-        --ring: 188 86% 53%;
+        --border: 220 13% 85%;
+        /* Çerçeveler biraz daha belirgin olsun ki beyazlıkta kaybolmasın */
+        --input: 220 13% 85%;
+        --ring: 262 80% 55%;
 
-        --radius: 0.75rem;
+        --radius: 1rem;
     }
 
     .dark {
-        --background: 0 0% 2%;     /* #050505 Pitch black */
-        --foreground: 0 0% 98%;
-
-        --card: 0 0% 4%;           /* #0A0A0A */
-        --card-foreground: 0 0% 98%;
-
-        --popover: 0 0% 4%;
-        --popover-foreground: 0 0% 98%;
-
-        --primary: 188 86% 53%;    /* Cyan-400 */
-        --primary-foreground: 0 0% 0%;
-
-        --secondary: 0 0% 8%;
-        --secondary-foreground: 0 0% 98%;
-
-        --muted: 0 0% 12%;
-        --muted-foreground: 0 0% 60%;
-
-        --accent: 188 86% 53%;
-        --accent-foreground: 0 0% 0%;
-
-        --destructive: 0 62% 30%;
-        --destructive-foreground: 0 0% 98%;
-
-        --border: 0 0% 12%;
-        --input: 0 0% 12%;
-        --ring: 188 86% 53%;
+        --background: 222 47% 9%;
+        --foreground: 210 40% 91%;
+        --card: 222 47% 11%;
+        --card-foreground: 210 40% 91%;
+        --popover: 222 47% 11%;
+        --popover-foreground: 210 40% 91%;
+        --primary: 237 28% 65%;
+        --primary-foreground: 222 47% 11%;
+        --secondary: 217 19% 27%;
+        --secondary-foreground: 210 40% 91%;
+        --muted: 217 19% 27%;
+        --muted-foreground: 215 20% 65%;
+        --accent: 168 34% 56%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 52% 68%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217 19% 27%;
+        --input: 217 19% 27%;
+        --ring: 237 28% 65%;
     }
 }
 
@@ -91,32 +89,30 @@
 
 @layer components {
     .glass-card {
-        @apply backdrop-blur-2xl rounded-none border shadow-2xl;
-        background: rgba(10, 10, 10, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        @apply backdrop-blur-2xl rounded-2xl shadow-lg;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .dark .glass-card {
-        background: rgba(5, 5, 5, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8);
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.2);
     }
 
     .btn-primary {
-        @apply text-black px-6 py-3 rounded-none font-bold tracking-widest uppercase transition-all shadow-lg;
-        background: #22d3ee; /* cyan-400 */
-        box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+        @apply text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md;
+        background: linear-gradient(135deg, #9FA8DA 0%, #7B7FD1 100%);
     }
 
     .btn-primary:hover {
-        @apply shadow-2xl;
-        background: #67e8f9; /* cyan-300 */
-        box-shadow: 0 0 30px rgba(34, 211, 238, 0.4);
+        @apply shadow-lg;
+        background: linear-gradient(135deg, #B3BAE5 0%, #9195DC 100%);
         transform: translateY(-1px);
     }
 
     .btn-secondary {
-        @apply bg-transparent hover:bg-white/5 text-white border-2 border-white/20 hover:border-white px-6 py-3 rounded-none font-bold tracking-widest uppercase transition-all;
+        @apply bg-gray-100 hover:bg-gray-200 dark:bg-slate-700/50 dark:hover:bg-slate-700 text-gray-800 dark:text-slate-200 border border-gray-200 dark:border-slate-600 px-6 py-3 rounded-xl transition-all backdrop-blur-sm;
     }
 }
 

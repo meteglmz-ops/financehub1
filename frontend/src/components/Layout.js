@@ -9,45 +9,17 @@ import { toast } from 'sonner';
 import TickerTape from './TickerTape';
 import { LEGAL_DOCS } from '../utils/legalTexts';
 
-// Custom Glowing Cursor Component
-const CustomCursor = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const updatePosition = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', updatePosition);
-    return () => window.removeEventListener('mousemove', updatePosition);
-  }, []);
-
-  return (
-    <div 
-      className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9999] mix-blend-screen transition-transform duration-75 ease-out hidden md:block"
-      style={{
-        transform: `translate(${position.x - 16}px, ${position.y - 16}px)`,
-        background: 'radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, rgba(6, 182, 212, 0) 70%)',
-        boxShadow: '0 0 20px 10px rgba(6, 182, 212, 0.2)',
-      }}
-    />
-  );
-};
-
 export default function Layout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   const { user, logout, authMode } = useAuth();
   const { privacyMode, togglePrivacy } = usePrivacy();
   const { t, i18n } = useTranslation();
 
   // Legal Modal State
   const [activeLegalDoc, setActiveLegalDoc] = useState(null);
-
-  // Force dark mode globally in Layout
-  useEffect(() => {
-    document.documentElement.classList.add('dark');
-  }, []);
 
   const navigation = [
     { name: t('nav.dashboard'), href: '/', icon: LayoutDashboard },
@@ -62,61 +34,69 @@ export default function Layout({ children }) {
     { name: t('nav.reports'), href: '/reports', icon: FileText },
   ];
 
+  const languages = [
+    { code: 'tr', name: 'Türkçe' },
+    { code: 'en', name: 'English' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'fr', name: 'Français' },
+    { code: 'es', name: 'Español' },
+    { code: 'ru', name: 'Русский' },
+    { code: 'ar', name: 'العربية' },
+    { code: 'zh', name: '中文' },
+    { code: 'ja', name: '日本語' },
+    { code: 'it', name: 'Italiano' }
+  ];
+
   const handleLogout = () => {
     logout();
     toast.success('Logged out successfully');
     navigate('/login');
   };
 
-  const labelClass = sidebarOpen
-    ? 'opacity-100 transition-opacity duration-300'
-    : 'opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 delay-75';
-
-  const dotClass = sidebarOpen
-    ? 'opacity-100 transition-opacity duration-300'
-    : 'opacity-0 md:group-hover:opacity-100 transition-opacity duration-300';
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('language', lng);
+    toast.success(`Language changed to ${languages.find(l => l.code === lng)?.name}`);
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-[#030303] text-white selection:bg-cyan-500/30 overflow-hidden relative font-sans cursor-none md:cursor-auto">
-      <CustomCursor />
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-[#030303] to-[#030303] pointer-events-none" />
-      <div className="fixed inset-0 z-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
+    <div className="flex flex-col h-screen bg-background overflow-hidden relative">
+      <div className="ambient-glow" />
 
       <TickerTape />
 
-      <div className="flex flex-1 overflow-hidden relative z-10">
+      <div className="flex flex-1 overflow-hidden">
         {sidebarOpen && (
           <div
-            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
-        {/* Sidebar */}
         <aside
           className={`
             fixed md:static inset-y-0 left-0 z-50
             flex flex-col 
-            border-r border-white/5 
-            bg-[#050505]/95 backdrop-blur-2xl shadow-[20px_0_50px_rgba(0,0,0,0.8)] md:shadow-none
+            border-r border-gray-100 dark:border-cyan-500/20 
+            bg-white dark:bg-black/95 backdrop-blur-xl shadow-2xl md:shadow-none
             transform transition-all duration-300 ease-in-out
             ${sidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full md:translate-x-0 md:w-20 md:hover:w-72 group'}
             overflow-hidden
           `}
         >
           {/* Header */}
-          <div className="h-20 flex items-center px-6 border-b border-white/5 whitespace-nowrap overflow-hidden">
+          <div className="h-20 flex items-center px-6 border-b border-gray-50 dark:border-cyan-500/20 whitespace-nowrap overflow-hidden">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 min-w-[32px] rounded-none border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center">
-                <BarChart3 className="text-cyan-400" size={18} />
+              <div className="w-8 h-8 min-w-[32px] rounded-lg bg-primary flex items-center justify-center">
+                <TrendingUp className="text-white" size={20} />
               </div>
-              <h1 className={`text-xl font-black tracking-widest text-white ${labelClass}`}>
-                TRADX<span className="text-cyan-500">EAI</span>
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-cyan-400 dark:to-purple-400 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                FinanceHub
               </h1>
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="md:hidden text-gray-500 hover:text-white ml-auto"
+              className="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 ml-auto"
             >
               <X size={24} />
             </button>
@@ -124,28 +104,28 @@ export default function Layout({ children }) {
 
           {/* User Profile */}
           <div className="p-4 pb-2">
-            <div className="p-2 bg-white/[0.02] border border-white/5 flex items-center gap-3 shadow-sm overflow-hidden whitespace-nowrap transition-all hover:bg-white/[0.05]">
+            <div className="p-2 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center gap-3 shadow-sm overflow-hidden whitespace-nowrap transition-all">
               <img
                 src={user?.avatar || "https://ui-avatars.com/api/?name=User&background=random"}
                 alt={user?.name}
-                className="w-8 h-8 min-w-[32px] rounded-none ring-1 ring-white/10"
+                className="w-8 h-8 min-w-[32px] rounded-full ring-2 ring-white dark:ring-white/10"
               />
-              <div className={`flex-1 min-w-0 ${labelClass}`}>
-                <p className="text-sm font-bold text-white truncate uppercase tracking-widest">{user?.name || 'MİSAFİR'}</p>
-                <p className="text-[10px] text-gray-500 truncate font-mono">{user?.email}</p>
+              <div className="flex-1 min-w-0 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user?.name || 'Misafir'}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
               </div>
             </div>
             {authMode === 'mock' && (
-              <div className={`mt-2 px-2 text-left ${labelClass}`}>
-                <span className="text-[10px] font-mono px-2 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                  SİSTEM_DURUMU: DEMO
+              <div className="mt-2 px-2 text-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                <span className="text-[10px] font-medium px-3 py-1 bg-amber-100 text-amber-700 dark:bg-yellow-500/20 dark:text-yellow-400 rounded-full">
+                  Demo Modu
                 </span>
               </div>
             )}
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          <nav className="flex-1 px-3 py-4 space-y-2 overflow-y-auto overflow-x-hidden">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
               const Icon = item.icon;
@@ -155,25 +135,24 @@ export default function Layout({ children }) {
                   to={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-4 px-3 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300
-                    whitespace-nowrap overflow-hidden border-l-2
+                    flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200
+                    whitespace-nowrap overflow-hidden
                     ${isActive
-                      ? 'bg-cyan-500/5 text-cyan-400 border-cyan-400'
-                      : 'border-transparent text-gray-500 hover:bg-white/[0.02] hover:text-white hover:border-gray-600'
+                      ? 'bg-primary/10 text-primary dark:bg-cyan-500/10 dark:text-cyan-400 shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                     }
                   `}
-                  title={item.name}
+                  title={item.name} // Tooltip for collapsed state
                 >
                   <Icon
-                    size={20}
-                    className={`min-w-[20px] transition-colors duration-300 ${isActive ? 'text-cyan-400' : 'text-gray-600'}`}
-                    strokeWidth={isActive ? 2 : 1.5}
+                    size={22}
+                    className={`min-w-[22px] transition-colors duration-200 ${isActive ? 'text-primary dark:text-cyan-400' : 'text-gray-400 dark:text-gray-500'}`}
                   />
-                  <span className={labelClass}>
+                  <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 delay-75">
                     {item.name}
                   </span>
                   {isActive && (
-                    <div className={`ml-auto w-1 h-1 rounded-full bg-cyan-400 ${dotClass} shadow-[0_0_5px_rgba(34,211,238,1)]`} />
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary dark:bg-cyan-400 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
                   )}
                 </Link>
               );
@@ -181,83 +160,94 @@ export default function Layout({ children }) {
           </nav>
 
           {/* Settings / Footer */}
-          <div className="p-4 border-t border-white/5 space-y-2 bg-transparent overflow-hidden">
+          <div className="p-4 border-t border-gray-100 dark:border-cyan-500/20 space-y-2 bg-gray-50/50 dark:bg-transparent overflow-hidden">
+            {/* Privacy Toggle */}
             <button
               onClick={togglePrivacy}
-              className="w-full flex items-center justify-between px-2 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 hover:bg-white/[0.02] hover:text-white transition-all whitespace-nowrap border border-transparent hover:border-white/5"
+              className="w-full flex items-center justify-between px-2 py-2.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:shadow-sm transition-all whitespace-nowrap"
             >
               <div className="flex items-center gap-3">
                 <div className="min-w-[16px]">
-                  {privacyMode ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {privacyMode ? <EyeOff size={20} /> : <Eye size={20} />}
                 </div>
-                <span className={labelClass}>{privacyMode ? 'DEĞERLERİ_GÖSTER' : 'DEĞERLERİ_GİZLE'}</span>
+                <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{privacyMode ? 'Değerleri Göster' : 'Değerleri Gizle'}</span>
               </div>
             </button>
 
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="w-full flex items-center justify-between px-2 py-2.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:shadow-sm transition-all whitespace-nowrap"
+            >
+              <div className="flex items-center gap-3">
+                <div className="min-w-[16px]">
+                  {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
+                </div>
+                <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{theme === 'dark' ? 'Koyu Tema' : 'Aydınlık Tema'}</span>
+              </div>
+            </button>
+
+            {/* Logout */}
             <button
               onClick={handleLogout}
-              className="w-full mt-2 flex items-center gap-3 px-2 py-3 text-xs font-bold uppercase tracking-widest text-red-500/80 hover:bg-red-500/10 hover:text-red-400 transition-all border border-transparent hover:border-red-500/20 whitespace-nowrap"
+              className="w-full mt-2 flex items-center gap-3 px-2 py-2.5 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/30 whitespace-nowrap"
             >
               <div className="min-w-[16px]">
-                <LogOut size={18} />
+                <LogOut size={20} />
               </div>
-              <span className={labelClass}>OTURUMU_KAPAT</span>
+              <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{t('auth.logout')}</span>
             </button>
           </div>
         </aside>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto relative flex flex-col bg-transparent">
-          {/* Mobile Top Bar */}
-          <div className="md:hidden sticky top-0 z-30 bg-[#050505]/95 backdrop-blur-xl border-b border-white/5 p-4 shadow-xl">
+        <main className="flex-1 overflow-y-auto relative flex flex-col">
+          <div className="md:hidden sticky top-0 z-30 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-cyan-500/20 p-4">
             <div className="flex items-center justify-between">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-900 dark:text-white"
               >
                 <Menu size={24} />
               </button>
 
-              <span className="text-lg font-black tracking-widest text-white">
-                TRADX<span className="text-cyan-500">EAI</span>
-              </span>
-
               <div className="flex items-center gap-2">
                 <button
                   onClick={togglePrivacy}
-                  className="p-2 border border-white/10 bg-white/5 text-gray-400 hover:text-white"
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-white/10"
+                  title={privacyMode ? 'Show values' : 'Hide values'}
                 >
-                  {privacyMode ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {privacyMode ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-lg bg-gray-100 dark:bg-white/10"
+                >
+                  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Page Content */}
-          <div className="p-4 md:p-8 lg:p-12 pb-24 flex-1">
+          <div className="p-6 md:p-8 lg:p-12 pb-24 flex-1">
             {children}
           </div>
 
           {/* Global Footer */}
-          <footer className="border-t border-white/5 bg-[#030303]/80 backdrop-blur-md p-6 mt-auto">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-gray-600 uppercase tracking-widest">
-              <div className="flex flex-col items-center md:items-start gap-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-cyan-500 font-bold">TRADXEAI_SYSTEMS</span>
-                  <span>// {new Date().getFullYear()}</span>
-                </div>
-                <div>
-                  ALTYAPI <a href="https://beecursor.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-colors font-bold">BEECURSOR.COM</a>'A AİTTİR.
-                </div>
+          <footer className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8 mt-auto">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2">
+                <span className="font-bold">FinanceHub</span>
+                <span>&copy; {new Date().getFullYear()}</span>
               </div>
               <div className="flex flex-wrap justify-center gap-6">
-                <button onClick={() => setActiveLegalDoc('terms')} className="hover:text-cyan-400 transition-colors">KULLANIM_KOŞULLARI</button>
-                <button onClick={() => setActiveLegalDoc('privacy')} className="hover:text-cyan-400 transition-colors">GİZLİLİK_POLİTİKASI</button>
-                <button onClick={() => setActiveLegalDoc('legal')} className="hover:text-cyan-400 transition-colors">YASAL_UYARI</button>
-                <button onClick={() => setActiveLegalDoc('disclaimer')} className="hover:text-cyan-400 transition-colors">SORUMLULUK_REDDİ</button>
+                <button onClick={() => setActiveLegalDoc('terms')} className="hover:text-primary dark:hover:text-cyan-400 cursor-pointer transition-colors">Kullanım Koşulları</button>
+                <button onClick={() => setActiveLegalDoc('privacy')} className="hover:text-primary dark:hover:text-cyan-400 cursor-pointer transition-colors">Gizlilik Politikası</button>
+                <button onClick={() => setActiveLegalDoc('legal')} className="hover:text-primary dark:hover:text-cyan-400 cursor-pointer transition-colors">Yasal Uyarı</button>
+                <button onClick={() => setActiveLegalDoc('disclaimer')} className="hover:text-primary dark:hover:text-cyan-400 cursor-pointer transition-colors">Sorumluluk Reddi</button>
               </div>
-              <div className="text-center md:text-right">
-                <p className="text-emerald-500/50">SYSTEM_STATUS: NOMINAL</p>
+              <div className="text-center md:text-right max-w-md opacity-75">
+                <p>Yatırım tavsiyesi değildir. Veriler gecikmeli olabilir.</p>
+                <p>Not Investment Advice. Data may be delayed.</p>
               </div>
             </div>
           </footer>
@@ -266,23 +256,23 @@ export default function Layout({ children }) {
 
       {/* Legal Modal */}
       {activeLegalDoc && (
-        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#050505] border border-white/10 w-full max-w-3xl max-h-[85vh] flex flex-col shadow-[0_0_50px_rgba(0,0,0,1)] animate-in zoom-in-95 duration-300">
-            <div className="flex justify-between items-center p-6 border-b border-white/10 bg-white/[0.02]">
-              <h3 className="text-lg font-bold tracking-widest text-cyan-400 uppercase">{LEGAL_DOCS[activeLegalDoc]?.title}</h3>
-              <button onClick={() => setActiveLegalDoc(null)} className="text-gray-500 hover:text-white transition-colors">
-                <X size={24} />
+        <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-2xl max-h-[80vh] rounded-3xl shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-white/10">
+              <h3 className="text-xl font-bold dark:text-white">{LEGAL_DOCS[activeLegalDoc]?.title}</h3>
+              <button onClick={() => setActiveLegalDoc(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full dark:text-white">
+                <X size={20} />
               </button>
             </div>
-            <div className="p-8 overflow-y-auto custom-scrollbar font-sans text-gray-400 text-sm leading-relaxed">
+            <div className="p-8 overflow-y-auto custom-scrollbar prose prose-sm dark:prose-invert max-w-none">
               <div dangerouslySetInnerHTML={{ __html: LEGAL_DOCS[activeLegalDoc]?.content }} />
             </div>
-            <div className="p-4 border-t border-white/10 bg-white/[0.02] flex justify-end">
+            <div className="p-6 border-t border-gray-100 dark:border-white/10 flex justify-end">
               <button
                 onClick={() => setActiveLegalDoc(null)}
-                className="px-8 py-3 bg-white text-black font-bold tracking-widest uppercase text-xs hover:bg-gray-200 transition-all rounded-none"
+                className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-colors"
               >
-                ONAYLA_VE_KAPAT
+                Kapat
               </button>
             </div>
           </div>

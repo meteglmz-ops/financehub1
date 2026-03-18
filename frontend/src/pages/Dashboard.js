@@ -86,8 +86,8 @@ export default function Dashboard() {
     return (
       <div className="flex items-center justify-center h-full" data-testid="dashboard-loading">
         <div className="text-center">
-          <Activity className="w-12 h-12 text-cyan-400 animate-pulse mx-auto mb-4" />
-          <p className="text-gray-500 font-mono tracking-widest text-xs">SİSTEM BAŞLATILIYOR...</p>
+          <Activity className="w-12 h-12 text-electric animate-pulse mx-auto mb-4" />
+          <p className="text-gray-400">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -96,58 +96,54 @@ export default function Dashboard() {
   return (
     <div className="space-y-8" data-testid="dashboard">
       <div>
-        <h1 className="text-4xl md:text-5xl font-black tracking-widest bg-gradient-to-r from-white via-cyan-100 to-gray-500 bg-clip-text text-transparent mb-2 uppercase">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
           {t('dashboard.title')}
         </h1>
-        <p className="text-sm font-mono tracking-widest text-cyan-500/80 uppercase">{t('dashboard.subtitle')}</p>
+        <p className="text-base text-gray-400">{t('dashboard.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <div className="glass-card p-6 stat-card group relative" data-testid="total-balance-card">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
+        <div className="cyberpunk-card p-6 stat-card group" data-testid="total-balance-card">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('dashboard.totalBalance')}</p>
-            <Wallet className="text-cyan-400" size={24} strokeWidth={1.5} />
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{t('dashboard.totalBalance')}</p>
+            <Wallet className="text-cyan-400" size={24} />
           </div>
-          <p className="text-3xl font-black font-mono text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" data-testid="total-balance">
+          <p className="text-3xl font-bold font-mono text-gray-900 dark:text-white" data-testid="total-balance">
             ${stats.total_balance.toFixed(2)}
           </p>
         </div>
 
-        <div className="glass-card p-6 stat-card group relative" data-testid="total-income-card">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
+        <div className="cyberpunk-card p-6 stat-card group" data-testid="total-income-card">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('dashboard.totalIncome')}</p>
-            <TrendingUp className="text-emerald-400" size={24} strokeWidth={1.5} />
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{t('dashboard.totalIncome')}</p>
+            <TrendingUp className="text-green-400" size={24} />
           </div>
-          <p className="text-3xl font-black font-mono text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.2)]" data-testid="total-income">
+          <p className="text-3xl font-bold font-mono text-green-400" data-testid="total-income">
             ${stats.total_income.toFixed(2)}
           </p>
         </div>
 
-        <div className="glass-card p-6 stat-card group relative" data-testid="total-expense-card">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent"></div>
+        <div className="cyberpunk-card p-6 stat-card group" data-testid="total-expense-card">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('dashboard.totalExpense')}</p>
-            <TrendingDown className="text-red-400" size={24} strokeWidth={1.5} />
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{t('dashboard.totalExpense')}</p>
+            <TrendingDown className="text-red-400" size={24} />
           </div>
-          <p className="text-3xl font-black font-mono text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.2)]" data-testid="total-expense">
+          <p className="text-3xl font-bold font-mono text-red-400" data-testid="total-expense">
             ${stats.total_expense.toFixed(2)}
           </p>
         </div>
 
-        <div className="glass-card p-6 stat-card group relative overflow-hidden" data-testid="health-score-card">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 pointer-events-none"></div>
+        <div className="cyberpunk-card p-6 stat-card group relative overflow-hidden" data-testid="health-score-card">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10"></div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('dashboard.financialHealth')}</p>
-              <Heart className="text-purple-400" size={24} strokeWidth={1.5} />
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{t('dashboard.financialHealth')}</p>
+              <Heart className="text-pink-400" size={24} />
             </div>
-            <p className={`text-4xl font-black font-mono ${getHealthColor(financialHealth)} drop-shadow-[0_0_10px_currentColor]`} data-testid="health-score">
+            <p className={`text-4xl font-bold font-mono ${getHealthColor(financialHealth)}`} data-testid="health-score">
               {financialHealth.toFixed(0)}
             </p>
-            <p className="text-[10px] font-mono uppercase tracking-widest text-gray-500 mt-2">{t('dashboard.savingsRate')}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('dashboard.savingsRate')}</p>
           </div>
         </div>
       </div>
@@ -155,9 +151,8 @@ export default function Dashboard() {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expenses by Category - Pie Chart */}
-        <div className="glass-card p-6 relative border-t hover:border-cyan-500/30 transition-colors" data-testid="expenses-pie-chart">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <h3 className="text-xs font-bold tracking-widest text-gray-400 mb-8 uppercase">Kategoriye Göre Giderler</h3>
+        <div className="glass-card p-6" data-testid="expenses-pie-chart">
+          <h3 className="text-xl font-semibold text-white mb-6">Expenses by Category</h3>
           {stats.expenses_by_category.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -171,67 +166,51 @@ export default function Dashboard() {
                   fill="#8884d8"
                   dataKey="amount"
                   nameKey="category"
-                  stroke="rgba(255,255,255,0.05)"
-                  strokeWidth={2}
                 >
                   {stats.expenses_by_category.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
+                <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-600 font-mono text-xs tracking-widest uppercase">
-              GİDER VERİSİ BULUNAMADI
+            <div className="h-[300px] flex items-center justify-center text-gray-500">
+              No expense data available
             </div>
           )}
         </div>
 
         {/* Balance History - Line Chart */}
-        <div className="glass-card p-6 relative border-t hover:border-cyan-500/30 transition-colors" data-testid="balance-line-chart">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-xs font-bold tracking-widest text-gray-400 uppercase">Bakiye Geçmişi</h3>
-            <div className="flex gap-2">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] animate-pulse"></span>
-              <span className="text-[10px] font-mono text-cyan-400 tracking-widest">CANLI</span>
-            </div>
-          </div>
+        <div className="glass-card p-6" data-testid="balance-line-chart">
+          <h3 className="text-xl font-semibold text-white mb-6">Balance History</h3>
           {stats.balance_history.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={stats.balance_history}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis
                   dataKey="date"
-                  stroke="rgba(255,255,255,0.2)"
-                  tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: 'monospace' }}
-                  tickLine={false}
-                  axisLine={false}
-                  dy={10}
+                  stroke="rgba(255,255,255,0.5)"
+                  tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }}
                 />
                 <YAxis
-                  stroke="rgba(255,255,255,0.2)"
-                  tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: 'monospace' }}
-                  tickLine={false}
-                  axisLine={false}
-                  dx={-10}
-                  tickFormatter={(value) => `$${value}`}
+                  stroke="rgba(255,255,255,0.5)"
+                  tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }}
                 />
-                <Tooltip content={<CustomLineTooltip />} cursor={{ stroke: 'rgba(34,211,238,0.2)', strokeWidth: 2 }} />
+                <Tooltip content={<CustomLineTooltip />} />
                 <Line
                   type="monotone"
                   dataKey="balance"
-                  stroke="#22d3ee"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 6, fill: '#000', stroke: '#22d3ee', strokeWidth: 2 }}
+                  stroke="#007AFF"
+                  strokeWidth={3}
+                  dot={{ fill: '#00F0FF', r: 4 }}
+                  activeDot={{ r: 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[300px] flex items-center justify-center text-gray-600 font-mono text-xs tracking-widest uppercase">
-              GEÇMİŞ VERİSİ BULUNAMADI
+            <div className="h-[300px] flex items-center justify-center text-gray-500">
+              No balance history available
             </div>
           )}
         </div>

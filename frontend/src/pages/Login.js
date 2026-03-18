@@ -25,10 +25,10 @@ export default function Login() {
     setLoading(true);
     try {
       await login(email, password);
-      toast.success('Giriş başarılı!');
+      toast.success('Welcome back!');
       navigate('/');
     } catch (error) {
-      toast.error('Giriş başarısız oldu');
+      toast.error('Login failed');
     } finally {
       setLoading(false);
     }
@@ -37,78 +37,72 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     try {
       await loginWithGoogle();
-      toast.success(authMode === 'firebase' ? 'Google ile giriş yapıldı!' : 'Demo modu: Giriş yapıldı!');
+      toast.success(authMode === 'firebase' ? 'Signed in with Google!' : 'Demo mode: Signed in!');
       navigate('/');
     } catch (error) {
-      toast.error('Google ile giriş başarısız oldu');
+      toast.error('Google sign-in failed');
     }
   };
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
     if (!resetEmail) {
-      toast.error('Lütfen e-posta adresinizi girin');
+      toast.error('Please enter your email address');
       return;
     }
     setResetLoading(true);
     try {
       await resetPassword(resetEmail);
-      toast.success('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi!');
+      toast.success('Password reset link sent to your email!');
       setShowResetModal(false);
       setResetEmail('');
     } catch (error) {
       console.error(error);
-      toast.error('Sıfırlama bağlantısı gönderilemedi. Lütfen e-posta adresinizi kontrol edin.');
+      toast.error('Failed to send reset link. Please check your email.');
     } finally {
       setResetLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#030303] relative overflow-hidden p-4">
-      {/* Dynamic Background Elements */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-[#030303] to-[#030303] pointer-events-none" />
-      <div className="absolute inset-0 z-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
-
-      <div className="w-full max-w-md relative z-10">
-        <div className="glass-card p-10 border-white/5 bg-[#050505] relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]" data-testid="login-page">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
-          
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-black tracking-tighter text-white mb-2 uppercase">
-              <Link to="/" className="hover:text-cyan-400 transition-colors">TRADXEAI</Link>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-gray-100 dark:from-black dark:to-gray-900 p-4">
+      <div className="w-full max-w-md">
+        <div className="glass-card p-8 border border-gray-200 dark:border-white/10" data-testid="login-page">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-electric dark:to-cyan bg-clip-text text-transparent mb-2">
+              FinanceHub
             </h1>
-            <p className="text-xs font-mono tracking-widest text-cyan-500/80 uppercase">Sisteme Giriş Yapın</p>
+            <p className="text-gray-600 dark:text-gray-400">Welcome back! Please login to continue</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6" data-testid="login-form">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-xs text-gray-500 font-mono tracking-widest uppercase">E-posta</Label>
+          <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
+            <div>
+              <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500/50" size={18} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-12 bg-black/50 border-white/10 text-white focus:border-cyan-400 font-mono tracking-widest rounded-none h-14"
-                  placeholder="ornek@email.com"
+                  className="pl-10 bg-white dark:bg-white/5 border-gray-300 dark:border-white/10 text-gray-900 dark:text-white"
+                  placeholder="your@email.com"
                   required
                   data-testid="email-input"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-xs text-gray-500 font-mono tracking-widest uppercase">Şifre</Label>
+            <div>
+              <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500/50" size={18} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-12 bg-black/50 border-white/10 text-white focus:border-cyan-400 font-mono tracking-widest rounded-none h-14 text-2xl tracking-[0.2em]"
+                  className="pl-10 bg-white dark:bg-white/5 border-gray-300 dark:border-white/10 text-gray-900 dark:text-white"
                   placeholder="••••••••"
                   required
                   data-testid="password-input"
@@ -116,96 +110,94 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs font-mono tracking-widest uppercase mt-4">
-              <Link to="/register" className="text-cyan-500 hover:text-cyan-400 hover:underline transition-colors" data-testid="register-link">
-                Hesap Oluştur
+            <div className="flex items-center justify-between text-sm">
+              <Link to="/register" className="text-blue-600 dark:text-electric hover:underline" data-testid="register-link">
+                Create account
               </Link>
               <button
                 type="button"
                 onClick={() => setShowResetModal(true)}
-                className="text-gray-500 hover:text-white transition-colors"
+                className="text-gray-600 dark:text-gray-400 hover:underline"
                 data-testid="forgot-password-link"
               >
-                Şifremi Unuttum
+                Forgot password?
               </button>
             </div>
 
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400 text-cyan-400 font-bold uppercase tracking-[0.2em] text-sm transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] rounded-none h-14 mt-8"
+              className="w-full btn-primary"
               data-testid="login-btn"
             >
-              {loading ? 'GİRİŞ YAPILIYOR...' : 'GİRİŞ YAP'}
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
 
-          <div className="relative my-8">
+          <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10"></div>
+              <div className="w-full border-t border-gray-300 dark:border-white/10"></div>
             </div>
-            <div className="relative flex justify-center text-xs font-mono tracking-widest uppercase">
-              <span className="px-4 bg-[#050505] text-gray-600">VEYA</span>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white dark:bg-black text-gray-500">or</span>
             </div>
           </div>
 
           <Button
             type="button"
             onClick={handleGoogleSignIn}
-            className="w-full bg-transparent hover:bg-white/5 border border-white/20 text-white font-bold uppercase tracking-widest text-sm transition-colors rounded-none h-14 flex items-center justify-center gap-3 group"
+            className="w-full btn-secondary flex items-center justify-center gap-2"
             data-testid="google-signin-btn"
           >
-            <Chrome size={18} className="group-hover:text-cyan-400 transition-colors" />
-            Google İle Giriş Yap
+            <Chrome size={20} />
+            Sign in with Google
           </Button>
         </div>
       </div>
-
       {/* Forgot Password Modal */}
       {showResetModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-[#050505] w-full max-w-md rounded-none shadow-[0_0_50px_rgba(0,0,0,1)] border border-white/10 flex flex-col p-8 relative">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold font-mono tracking-widest text-white uppercase">Şifre Sıfırlama</h3>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-white/10">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Reset Password</h3>
               <button
                 onClick={() => setShowResetModal(false)}
-                className="text-gray-500 hover:text-white transition-colors"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white transition-colors"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handlePasswordReset} className="space-y-6">
-              <p className="text-xs font-mono tracking-widest uppercase text-gray-400 leading-relaxed">
-                E-posta adresinizi girin, size şifrenizi sıfırlamanız için bir bağlantı göndereceğiz.
+            <form onSubmit={handlePasswordReset} className="p-6 space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Enter your email address and we'll send you a link to reset your password.
               </p>
 
-              <div className="space-y-2">
-                <Label htmlFor="reset-email" className="text-xs text-gray-500 font-mono tracking-widest uppercase">E-posta Adresi</Label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-500/50" size={18} />
+              <div>
+                <Label htmlFor="reset-email" className="text-gray-700 dark:text-gray-300">Email Address</Label>
+                <div className="relative mt-1">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                   <Input
                     id="reset-email"
                     type="email"
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
-                    className="pl-12 bg-black/50 border-white/10 text-white focus:border-cyan-400 font-mono tracking-widest rounded-none h-14"
-                    placeholder="ornek@email.com"
+                    className="pl-10 bg-white dark:bg-white/5 border-gray-300 dark:border-white/10 text-gray-900 dark:text-white"
+                    placeholder="your@email.com"
                     required
                     autoFocus
                   />
                 </div>
               </div>
 
-              <div className="mt-8">
+              <div className="flex justify-end pt-2">
                 <Button
                   type="submit"
                   disabled={resetLoading}
-                  className="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400 text-cyan-400 font-bold uppercase tracking-widest text-sm transition-colors rounded-none h-14 flex items-center justify-center gap-3"
+                  className="w-full btn-primary flex items-center justify-center gap-2"
                 >
-                  {resetLoading ? 'GÖNDERİLİYOR...' : 'SIFIRLAMA BAĞLANTISI GÖNDER'}
-                  {!resetLoading && <ArrowRight size={18} />}
+                  {resetLoading ? 'Sending...' : 'Send Reset Link'}
+                  {!resetLoading && <ArrowRight size={16} />}
                 </Button>
               </div>
             </form>

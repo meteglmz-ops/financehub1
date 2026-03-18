@@ -384,11 +384,6 @@ CRYPTO_LIST = {
     "RUNE", "KAVA",
 }
 
-BIST_STOCKS = {
-    "THYAO", "EREGL", "ASELS", "GARAN", "ISCTR", "AKBNK", "YKBNK", "KCHOL", "SAHOL", "TCELL", 
-    "TUPRS", "BIMAS", "SISE", "ENKAI", "PGSUS", "FROTO", "TOASO", "PETKM", "HEKTS", "SASA",
-}
-
 INTERVAL_MAP = {
     "15m": ("15m", "5d"),
     "30m": ("30m", "5d"),
@@ -415,10 +410,6 @@ async def get_ai_analysis(request: AIAnalysisRequest, user_data: dict = Depends(
     # Auto-append -USD for known crypto tickers
     if symbol in CRYPTO_LIST:
         symbol = f"{symbol}-USD"
-        
-    # Auto-append .IS for BIST stocks
-    if symbol in BIST_STOCKS:
-        symbol = f"{symbol}.IS"
 
     # ── 1. Fetch Market Data ──────────────────────────────────────────────────
     yf_interval, yf_period = INTERVAL_MAP.get(period, ("1d", "1mo"))

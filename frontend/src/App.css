@@ -123,39 +123,3 @@
 .dark .stat-card:hover {
   box-shadow: 0 12px 40px rgba(123, 127, 209, 0.15);
 }
-
-/* ── Mobile Responsive Improvements ─────────────────────────────── */
-
-/* Smooth scrolling on iOS */
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-main {
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Prevent text from being too small on mobile */
-@media (max-width: 768px) {
-  html {
-    font-size: 15px;
-  }
-
-  /* Better touch targets */
-  button, a {
-    min-height: 40px;
-  }
-
-  /* Prevent horizontal overflow */
-  .overflow-x-auto {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Tables scrollable on mobile */
-  table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-}

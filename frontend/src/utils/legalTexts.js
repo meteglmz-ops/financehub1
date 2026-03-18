@@ -3,19 +3,19 @@ export const LEGAL_DOCS = {
         title: "Kullanım Koşulları",
         content: `
             <h3>1. Giriş</h3>
-            <p>TRADXEAİ platformuna hoş geldiniz. Bu platformu kullanarak aşağıdaki kullanım koşullarını kabul etmiş sayılırsınız.</p>
+            <p>FinanceHub platformuna hoş geldiniz. Bu platformu kullanarak aşağıdaki kullanım koşullarını kabul etmiş sayılırsınız.</p>
             
             <h3>2. Hizmet Kullanımı</h3>
-            <p>TRADXEAİ, kullanıcılara finansal analiz, takip ve raporlama araçları sunar. Platformun sunduğu hizmetler sadece bilgilendirme amaçlıdır.</p>
+            <p>FinanceHub, kullanıcılara finansal analiz, takip ve raporlama araçları sunar. Platformun sunduğu hizmetler sadece bilgilendirme amaçlıdır.</p>
             
             <h3>3. Hesap Güvenliği</h3>
             <p>Kullanıcılar, hesap bilgilerinin güvenliğinden kendileri sorumludur. Şüpheli bir durum fark edildiğinde derhal destek ekibiyle iletişime geçilmelidir.</p>
             
             <h3>4. Fikri Mülkiyet</h3>
-            <p>Platform üzerindeki tüm içerik, logo ve yazılımlar TRADXEAİ'ın mülkiyetindedir ve izinsiz kopyalanamaz.</p>
+            <p>Platform üzerindeki tüm içerik, logo ve yazılımlar FinanceHub'ın mülkiyetindedir ve izinsiz kopyalanamaz.</p>
             
             <h3>5. Değişiklikler</h3>
-            <p>TRADXEAİ, bu koşulları önceden haber vermeksizin değiştirme hakkını saklı tutar.</p>
+            <p>FinanceHub, bu koşulları önceden haber vermeksizin değiştirme hakkını saklı tutar.</p>
         `
     },
     privacy: {
@@ -51,10 +51,10 @@ export const LEGAL_DOCS = {
         title: "Sorumluluk Reddi",
         content: `
             <h3>1. Yatırım Tavsiyesi Değildir</h3>
-            <p>TRADXEAİ tarafından sunulan hiçbir analiz, grafik veya yapay zeka sinyali yatırım tavsiyesi niteliğinde değildir.</p>
+            <p>FinanceHub tarafından sunulan hiçbir analiz, grafik veya yapay zeka sinyali yatırım tavsiyesi niteliğinde değildir.</p>
             
             <h3>2. Sorumluluk Kabulü</h3>
-            <p>Kullanıcı, platform üzerinde aldığı kararlardan doğabilecek maddi/manevi zararlardan TRADXEAİ'ı sorumlu tutamaz.</p>
+            <p>Kullanıcı, platform üzerinde aldığı kararlardan doğabilecek maddi/manevi zararlardan FinanceHub'ı sorumlu tutamaz.</p>
             
             <h3>3. Teknik Sorunlar</h3>
             <p>Sistemde oluşabilecek teknik aksaklıklar, veri kesintileri veya hatalı hesaplamalar nedeniyle oluşabilecek kayıplardan platform sorumlu değildir.</p>

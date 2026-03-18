@@ -53,7 +53,7 @@ export default function Savings() {
   const handleAddFunds = () => {
     const amount = parseFloat(fundsAmount);
     if (isNaN(amount) || amount <= 0) {
-      toast.error('Geçersiz miktar');
+      toast.error('Invalid amount');
       return;
     }
 
@@ -65,7 +65,7 @@ export default function Savings() {
     });
 
     saveVaults(updated);
-    toast.success(`Kasaya $${amount.toFixed(2)} eklendi!`);
+    toast.success(`Added $${amount.toFixed(2)} to vault!`);
     setAddFundsDialog({ open: false, vaultId: null });
     setFundsAmount('');
   };
@@ -84,63 +84,62 @@ export default function Savings() {
 
   return (
     <div className="space-y-8" data-testid="savings-page">
-      <div className="flex items-center justify-between bg-[#050505] p-6 border-b border-white/10 relative overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"></div>
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-widest text-white mb-2 uppercase font-mono">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
             {t('savings.title')}
           </h1>
-          <p className="text-xs text-gray-400 font-mono tracking-widest uppercase">{t('savings.subtitle')}</p>
+          <p className="text-base text-gray-400">{t('savings.subtitle')}</p>
         </div>
         
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-transparent hover:bg-cyan-500/10 border border-cyan-400 text-cyan-400 font-bold uppercase tracking-widest text-sm transition-colors shadow-[0_0_15px_rgba(34,211,238,0.2)] rounded-none" data-testid="add-vault-btn">
+            <Button className="cyberpunk-btn" data-testid="add-vault-btn">
               <Plus size={20} className="mr-2" />
               {t('savings.addVault')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-[#050505] border border-white/10 text-white shadow-[0_0_50px_rgba(0,0,0,1)] rounded-none">
+          <DialogContent className="cyberpunk-dialog">
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold font-mono tracking-widest uppercase text-cyan-400 border-b border-white/10 pb-4">{t('savings.addVault')}</DialogTitle>
+              <DialogTitle className="text-2xl font-bold text-cyan-400">{t('savings.addVault')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-500 font-mono tracking-widest uppercase">{t('savings.vaultName')}</Label>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label className="text-gray-300">{t('savings.vaultName')}</Label>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="bg-black/50 border-white/10 text-white focus:border-cyan-400 font-mono tracking-widest rounded-none h-12"
-                  placeholder="Acil Durum Fonu, Tatil, vb."
+                  className="cyberpunk-input"
+                  placeholder="Emergency Fund, Vacation, etc."
                   required
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-500 font-mono tracking-widest uppercase">{t('savings.targetAmount')}</Label>
+              <div>
+                <Label className="text-gray-300">{t('savings.targetAmount')}</Label>
                 <Input
                   type="number"
                   step="0.01"
                   value={formData.targetAmount}
                   onChange={(e) => setFormData({ ...formData, targetAmount: e.target.value })}
-                  className="bg-black/50 border-white/10 text-white focus:border-cyan-400 font-mono tracking-widest rounded-none h-12"
+                  className="cyberpunk-input"
                   placeholder="0.00"
                   required
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-500 font-mono tracking-widest uppercase">{t('savings.deadline')}</Label>
+              <div>
+                <Label className="text-gray-300">{t('savings.deadline')}</Label>
                 <Input
                   type="date"
                   value={formData.deadline}
                   onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                  className="bg-black/50 border-white/10 text-white focus:border-cyan-400 font-mono tracking-widest rounded-none h-12 [color-scheme:dark]"
+                  className="cyberpunk-input"
                   required
                 />
               </div>
               
-              <Button type="submit" className="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400 text-cyan-400 font-bold uppercase tracking-widest text-sm transition-colors rounded-none h-14">
+              <Button type="submit" className="cyberpunk-btn w-full">
                 {t('common.add')}
               </Button>
             </form>
@@ -149,86 +148,93 @@ export default function Savings() {
       </div>
 
       {vaults.length === 0 ? (
-        <div className="col-span-full border border-dashed border-white/20 p-12 text-center text-gray-500 bg-[#050505]">
-          <Target className="w-12 h-12 mx-auto mb-4 text-cyan-400/30" />
-          <p className="font-mono tracking-widest uppercase text-sm">{t('savings.noVaults')}</p>
+        <div className="text-center py-16 cyberpunk-card">
+          <Target className="w-16 h-16 mx-auto mb-4 text-cyan-400/30" />
+          <p className="text-gray-400">{t('savings.noVaults')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {vaults.map((vault) => {
             const progress = getProgress(vault.currentAmount, vault.targetAmount);
             const daysLeft = getDaysLeft(vault.deadline);
             const isCompleted = progress >= 100;
 
             return (
-              <div key={vault.id} className="glass-card p-6 group hover:border-cyan-500/30 transition-all border-white/5 bg-[#050505] relative overflow-hidden" data-testid={`vault-${vault.id}`}>
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div key={vault.id} className="cyberpunk-card p-6 group relative overflow-hidden" data-testid={`vault-${vault.id}`}>
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-6">
                     <div>
-                      <h3 className="text-lg font-bold font-mono tracking-widest text-white uppercase mb-1">{vault.name}</h3>
-                      <p className="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
-                        <Calendar size={12} />
+                      <h3 className="text-xl font-bold text-white mb-1">{vault.name}</h3>
+                      <p className="text-sm text-gray-400 flex items-center gap-2">
+                        <Calendar size={14} />
                         {daysLeft > 0 ? `${daysLeft} ${t('savings.daysLeft')}` : t('savings.completed')}
                       </p>
                     </div>
                     {isCompleted && (
-                      <span className="px-2 py-1 border border-emerald-500/50 bg-emerald-500/10 text-emerald-400 text-[10px] uppercase font-mono tracking-widest">
+                      <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full">
                         {t('savings.completed')}
                       </span>
                     )}
                   </div>
 
-                  <div className="mb-8 mt-4">
-                    <div className="relative flex items-center justify-center">
+                  <div className="mb-6">
+                    <div className="flex items-center justify-center mb-4">
                       <svg className="w-32 h-32 transform -rotate-90">
                         <circle
                           cx="64"
                           cy="64"
                           r="56"
-                          stroke="rgba(255,255,255,0.05)"
+                          stroke="currentColor"
                           strokeWidth="8"
                           fill="none"
+                          className="text-gray-700"
                         />
                         <circle
                           cx="64"
                           cy="64"
                           r="56"
-                          stroke={isCompleted ? "#10b981" : "#22d3ee"}
+                          stroke="url(#gradient)"
                           strokeWidth="8"
                           fill="none"
                           strokeDasharray={`${(progress / 100) * 351.86} 351.86`}
-                          className="transition-all duration-1000 ease-out drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]"
+                          className="transition-all duration-500"
                         />
+                        <defs>
+                          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#06b6d4" />
+                            <stop offset="100%" stopColor="#a855f7" />
+                          </linearGradient>
+                        </defs>
                       </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <p className={`text-2xl font-black font-mono tracking-widest ${isCompleted ? 'text-emerald-400' : 'text-cyan-400'}`}>{progress.toFixed(0)}%</p>
+                      <div className="absolute">
+                        <p className="text-2xl font-bold text-cyan-400">{progress.toFixed(0)}%</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-4 mb-6 border-t border-white/5 pt-6">
+                  <div className="space-y-3 mb-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase">{t('savings.currentAmount')}</span>
-                      <span className="text-lg font-black text-white font-mono tracking-widest">
-                        ${vault.currentAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <span className="text-sm text-gray-400">{t('savings.currentAmount')}</span>
+                      <span className="text-lg font-bold text-white font-mono">
+                        ${vault.currentAmount.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase">{t('savings.targetAmount')}</span>
-                      <span className="text-lg font-black text-cyan-400 font-mono tracking-widest">
-                        ${vault.targetAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <span className="text-sm text-gray-400">{t('savings.targetAmount')}</span>
+                      <span className="text-lg font-bold text-cyan-400 font-mono">
+                        ${vault.targetAmount.toFixed(2)}
                       </span>
                     </div>
                   </div>
 
                   <Button
                     onClick={() => setAddFundsDialog({ open: true, vaultId: vault.id })}
-                    className="w-full bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 font-bold uppercase tracking-widest text-[10px] transition-colors rounded-none h-10 disabled:opacity-50 disabled:border-gray-500 disabled:text-gray-500"
+                    className="cyberpunk-btn w-full"
                     disabled={isCompleted}
                   >
-                    <DollarSign size={14} className="mr-2" />
+                    <DollarSign size={16} className="mr-2" />
                     {t('savings.addFunds')}
                   </Button>
                 </div>
@@ -239,23 +245,23 @@ export default function Savings() {
       )}
 
       <Dialog open={addFundsDialog.open} onOpenChange={(open) => setAddFundsDialog({ open, vaultId: addFundsDialog.vaultId })}>
-        <DialogContent className="bg-[#050505] border border-white/10 text-white shadow-[0_0_50px_rgba(0,0,0,1)] rounded-none">
+        <DialogContent className="cyberpunk-dialog">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold font-mono tracking-widest uppercase text-cyan-400 border-b border-white/10 pb-4">{t('savings.addFunds')}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-cyan-400">{t('savings.addFunds')}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-6 mt-4">
-            <div className="space-y-2">
-              <Label className="text-xs text-gray-500 font-mono tracking-widest uppercase">Eklenecek Miktar</Label>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-gray-300">Amount</Label>
               <Input
                 type="number"
                 step="0.01"
                 value={fundsAmount}
                 onChange={(e) => setFundsAmount(e.target.value)}
-                className="bg-black/50 border-white/10 text-white focus:border-cyan-400 font-mono tracking-widest rounded-none h-12"
+                className="cyberpunk-input"
                 placeholder="0.00"
               />
             </div>
-            <Button onClick={handleAddFunds} className="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400 text-cyan-400 font-bold uppercase tracking-widest text-sm transition-colors rounded-none h-14">
+            <Button onClick={handleAddFunds} className="cyberpunk-btn w-full">
               {t('common.confirm')}
             </Button>
           </div>

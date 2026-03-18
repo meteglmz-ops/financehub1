@@ -65,23 +65,12 @@ const POPULAR_ASSETS = [
     { s: "SPX", n: "S&P 500" }, { s: "DJI", n: "Dow Jones" }, { s: "IXIC", n: "NASDAQ" },
     { s: "RUT", n: "Russell 2000" }, { s: "VIX", n: "VIX (Volatility Index)" },
     { s: "FTSE", n: "FTSE 100" }, { s: "DAX", n: "DAX (Germany)" }, { s: "CAC", n: "CAC 40 (France)" },
-    { s: "N225", n: "Nikkei 225" }, { s: "HSI", n: "Hang Seng" },
-
-    // === BIST (Turkish Stocks) ===
-    { s: "THYAO", n: "Türk Hava Yolları" }, { s: "EREGL", n: "Ereğli Demir Çelik" }, { s: "ASELS", n: "Aselsan" },
-    { s: "GARAN", n: "Garanti BBVA" }, { s: "ISCTR", n: "İş Bankası" }, { s: "AKBNK", n: "Akbank" },
-    { s: "YKBNK", n: "Yapı Kredi" }, { s: "KCHOL", n: "Koç Holding" }, { s: "SAHOL", n: "Sabancı Holding" },
-    { s: "TCELL", n: "Turkcell" }, { s: "TUPRS", n: "Tüpraş" }, { s: "BIMAS", n: "BİM Birleşik Mağazalar" },
-    { s: "SISE", n: "Şişecam" }, { s: "ENKAI", n: "Enka İnşaat" }, { s: "PGSUS", n: "Pegasus" },
-    { s: "FROTO", n: "Ford Otosan" }, { s: "TOASO", n: "Tofaş" }, { s: "PETKM", n: "Petkim" },
-    { s: "HEKTS", n: "Hektaş" }, { s: "SASA", n: "SASA Polyester" }
+    { s: "N225", n: "Nikkei 225" }, { s: "HSI", n: "Hang Seng" }
 ];
 
 // Smart symbol mapper for TradingView - Maps assets to correct exchange/format
 const getTradingViewSymbol = (symbol) => {
-    let s = symbol.toUpperCase();
-    if (s.endsWith('-USD')) s = s.replace('-USD', '');
-    if (s.endsWith('.IS')) s = s.replace('.IS', '');
+    const s = symbol.toUpperCase();
 
     // Cryptocurrencies -> Binance
     const cryptos = ['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'ADA', 'AVAX', 'DOGE', 'DOT', 'MATIC',
@@ -121,12 +110,6 @@ const getTradingViewSymbol = (symbol) => {
     if (s === 'CAC') return 'TVC:CAC';
     if (s === 'N225') return 'TVC:NI225';
     if (s === 'HSI') return 'TVC:HSI';
-
-    // BIST Stocks
-    const bistStocks = ['THYAO', 'EREGL', 'ASELS', 'GARAN', 'ISCTR', 'AKBNK', 'YKBNK', 'KCHOL', 'SAHOL', 'TCELL', 'TUPRS', 'BIMAS', 'SISE', 'ENKAI', 'PGSUS', 'FROTO', 'TOASO', 'PETKM', 'HEKTS', 'SASA'];
-    if (bistStocks.includes(s)) {
-        return `BIST:${s}`;
-    }
 
     // US Stocks - Default to NASDAQ (will auto-switch to NYSE if needed)
     return `NASDAQ:${s}`;
@@ -169,23 +152,17 @@ const TradingViewWidget = ({ symbol, height = 700 }) => {
         // Cleanup previous script and content
         if (scriptContainer) {
             scriptContainer.innerHTML = "";
-
-            const widgetDiv = document.createElement("div");
-            widgetDiv.className = "tradingview-widget-container__widget";
-            widgetDiv.style.height = `${height}px`;
-            widgetDiv.style.width = "100%";
-            scriptContainer.appendChild(widgetDiv);
         }
 
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
         script.type = "text/javascript";
         script.async = true;
+        // script.crossOrigin = "anonymous"; // Keep this commented unless you are sure the server supports it properly.
 
         script.innerHTML = JSON.stringify({
-            "width": "100%",
-            "height": `${height}`,
-            "symbol": getTradingViewSymbol(symbol),
+            "autosize": true,
+            "symbol": getTradingViewSymbol(symbol.replace('-USD', '')),
             "interval": "D",
             "timezone": "Etc/UTC",
             "theme": "light",
@@ -205,20 +182,16 @@ const TradingViewWidget = ({ symbol, height = 700 }) => {
             console.error("TradingView Script Error (onerror):", e);
         };
 
-        // Delay appending slightly to ensure container CSS has fully painted dimensions
-        const timeoutId = setTimeout(() => {
-            try {
-                if (scriptContainer) {
-                    scriptContainer.appendChild(script);
-                    scriptRef.current = script;
-                }
-            } catch (e) {
-                console.error("TradingView load error:", e);
+        try {
+            if (scriptContainer) {
+                scriptContainer.appendChild(script);
+                scriptRef.current = script;
             }
-        }, 50);
+        } catch (e) {
+            console.error("TradingView load error:", e);
+        }
 
         return () => {
-            clearTimeout(timeoutId);
             // Cleanup on unmount or symbol change
             if (scriptContainer) {
                 scriptContainer.innerHTML = "";
@@ -235,99 +208,6 @@ const TradingViewWidget = ({ symbol, height = 700 }) => {
             ref={container}
             style={{ height: `${height}px`, minHeight: '400px' }}
         />
-    );
-};
-
-const SignalVisualizer = ({ signal }) => {
-    if (!signal || !signal.entry_price || !signal.stop_loss || !signal.take_profit_1) return null;
-
-    // Convert string prices to numbers for calculation, removing any comma or non-numeric if necessary
-    const parsePrice = (p) => {
-        if (!p) return 0;
-        const cleaned = p.toString().replace(/[^\d.-]/g, '');
-        return parseFloat(cleaned);
-    };
-
-    const entry = parsePrice(signal.entry_price);
-    const stop = parsePrice(signal.stop_loss);
-    const target1 = parsePrice(signal.take_profit_1);
-    const target2 = parsePrice(signal.take_profit_2) || target1;
-
-    // If parsing fails for any reason
-    if (!entry || !stop || !target1) return null;
-
-    // Determine direction
-    const isLong = target1 > entry;
-
-    // Find min and max for scaling
-    // Add 10% padding
-    const minVal = isLong ? stop : target2;
-    const maxVal = isLong ? target2 : stop;
-    const range = Math.max(0.000001, maxVal - minVal);
-    const paddedMin = minVal - (range * 0.1);
-    const paddedMax = maxVal + (range * 0.1);
-    const totalRange = paddedMax - paddedMin;
-
-    const getPos = (val) => ((val - paddedMin) / totalRange) * 100;
-
-    const MathClamp = (val, min, max) => Math.min(Math.max(val, min), max);
-
-    const stopPos = MathClamp(getPos(stop), 5, 95);
-    const entryPos = MathClamp(getPos(entry), 5, 95);
-    const t1Pos = MathClamp(getPos(target1), 5, 95);
-    const t2Pos = MathClamp(getPos(target2), 5, 95);
-
-    return (
-        <div className="mb-6 bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-300">
-            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-10 flex items-center gap-2">
-                <Target size={16} className="text-primary" /> AI Trade Setup Visualization
-            </h3>
-
-            <div className="relative h-3 bg-gray-100 dark:bg-gray-700/50 rounded-full mx-4 my-8 shadow-inner">
-                {/* Connecting lines */}
-                {isLong ? (
-                    <>
-                        <div className="absolute top-0 bottom-0 bg-rose-400/80 rounded-l-full" style={{ left: `${stopPos}%`, width: `${entryPos - stopPos}%` }}></div>
-                        <div className="absolute top-0 bottom-0 bg-emerald-400/80 rounded-r-full" style={{ left: `${entryPos}%`, width: `${t2Pos - entryPos}%` }}></div>
-                    </>
-                ) : (
-                    <>
-                        <div className="absolute top-0 bottom-0 bg-emerald-400/80 rounded-l-full" style={{ left: `${t2Pos}%`, width: `${entryPos - t2Pos}%` }}></div>
-                        <div className="absolute top-0 bottom-0 bg-rose-400/80 rounded-r-full" style={{ left: `${entryPos}%`, width: `${stopPos - entryPos}%` }}></div>
-                    </>
-                )}
-
-                {/* Stop Loss Node */}
-                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center" style={{ left: `${stopPos}%` }}>
-                    <div className="w-5 h-5 rounded-full border-4 border-white dark:border-gray-800 bg-rose-500 shadow-md z-10 transition-transform hover:scale-125"></div>
-                    <div className="absolute -top-10 text-xs font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded shadow-sm border border-rose-100 dark:border-rose-500/30">Stop ({signal.stop_loss})</div>
-                </div>
-
-                {/* Entry Node */}
-                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center" style={{ left: `${entryPos}%` }}>
-                    <div className="w-6 h-6 rounded-full border-4 border-white dark:border-gray-800 bg-blue-500 shadow-lg z-20 transition-transform hover:scale-125"></div>
-                    <div className="absolute top-6 text-sm font-black text-blue-600 dark:text-blue-400 whitespace-nowrap bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded shadow-sm border border-blue-100 dark:border-blue-500/30">Entry: {signal.entry_price}</div>
-                </div>
-
-                {/* Target 1 Node */}
-                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center" style={{ left: `${t1Pos}%` }}>
-                    <div className="w-5 h-5 rounded-full border-4 border-white dark:border-gray-800 bg-emerald-500 shadow-md z-10 transition-transform hover:scale-125"></div>
-                    <div className="absolute -top-10 text-xs font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded shadow-sm border border-emerald-100 dark:border-emerald-500/30">TP1 ({signal.take_profit_1})</div>
-                </div>
-
-                {/* Target 2 Node */}
-                {(target2 !== target1) && (
-                    <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center" style={{ left: `${t2Pos}%` }}>
-                        <div className="w-5 h-5 rounded-full border-4 border-white dark:border-gray-800 bg-emerald-500 shadow-md z-10 transition-transform hover:scale-125"></div>
-                        <div className="absolute -top-10 text-xs font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded shadow-sm border border-emerald-100 dark:border-emerald-500/30">TP2 ({signal.take_profit_2})</div>
-                    </div>
-                )}
-            </div>
-
-            <div className="mt-8 text-[11px] text-center text-gray-400 dark:text-gray-500 italic">
-                Açıklama: Bu grafiksel seviyeler, TradingView widget kısıtlamaları nedeniyle fiyat grafiğinin hemen üzerinde referans amaçlı sunulmaktadır.
-            </div>
-        </div>
     );
 };
 
@@ -421,24 +301,24 @@ export default function AIAnalysis() {
 
     // DYNAMIC THEME COLORS based on Signal
     const getThemeColors = () => {
-        if (!result) return { bg: '', border: 'border-white/10', text: 'text-white', shadow: 'shadow-none' };
+        if (!result) return { bg: '', border: 'border-gray-100 dark:border-white/10', text: 'text-gray-900', shadow: 'shadow-sm' };
 
         if (result.sentiment === 'Bullish') {
             return {
-                bg: 'bg-emerald-500/5',
-                border: 'border-emerald-500/30',
-                text: 'text-emerald-400',
-                shadow: 'shadow-[0_0_20px_rgba(52,211,153,0.1)]'
+                bg: 'bg-emerald-50/50 dark:bg-emerald-900/10',
+                border: 'border-emerald-200 dark:border-emerald-500/30',
+                text: 'text-emerald-700',
+                shadow: 'shadow-emerald-100 dark:shadow-emerald-900/20'
             };
         } else if (result.sentiment === 'Bearish') {
             return {
-                bg: 'bg-rose-500/5',
-                border: 'border-rose-500/30',
-                text: 'text-rose-400',
-                shadow: 'shadow-[0_0_20px_rgba(244,63,94,0.1)]'
+                bg: 'bg-rose-50/50 dark:bg-rose-900/10',
+                border: 'border-rose-200 dark:border-rose-500/30',
+                text: 'text-rose-700',
+                shadow: 'shadow-rose-100 dark:shadow-rose-900/20'
             };
         }
-        return { bg: '', border: 'border-white/10', text: 'text-white', shadow: 'shadow-none' };
+        return { bg: '', border: 'border-gray-100 dark:border-white/10', text: 'text-gray-900', shadow: 'shadow-sm' };
     };
 
     const theme = getThemeColors();
@@ -535,10 +415,10 @@ export default function AIAnalysis() {
                                         <strong>Risk Uyarısı:</strong> Kripto paralar, hisse senetleri ve diğer finansal varlıklar yüksek volatiliteye sahiptir ve ciddi finansal kayıplara yol açabilir. Yapılan işlemler tamamen kullanıcının kendi riski altındadır.
                                     </li>
                                     <li>
-                                        <strong>Doğruluk Garantisi Yoktur:</strong> AI modelleri geçmiş verileri analiz ederek tahminlerde bulunur ancak geleceği garanti edemez. TRADXEAİ, sunulan verilerin doğruluğu, güncelliği veya eksiksizliği konusunda herhangi bir garanti vermez.
+                                        <strong>Doğruluk Garantisi Yoktur:</strong> AI modelleri geçmiş verileri analiz ederek tahminlerde bulunur ancak geleceği garanti edemez. FinanceHub, sunulan verilerin doğruluğu, güncelliği veya eksiksizliği konusunda herhangi bir garanti vermez.
                                     </li>
                                     <li>
-                                        <strong>Sorumluluk Reddi:</strong> Kullanıcı, bu platformdaki bilgilere dayanarak yaptığı işlemlerden doğabilecek doğrudan veya dolaylı zararlardan TRADXEAİ'ın sorumlu tutulamayacağını kabul eder.
+                                        <strong>Sorumluluk Reddi:</strong> Kullanıcı, bu platformdaki bilgilere dayanarak yaptığı işlemlerden doğabilecek doğrudan veya dolaylı zararlardan FinanceHub'ın sorumlu tutulamayacağını kabul eder.
                                     </li>
                                 </ul>
                             </div>
@@ -558,10 +438,10 @@ export default function AIAnalysis() {
             <div className={`max-w-7xl mx-auto space-y-6 px-4 md:px-0 pt-6 transition-all duration-500 ${!hasAcceptedDisclaimer ? 'blur-lg pointer-events-none opacity-50' : ''}`}>
 
                 {/* Header & Controls */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white/5 backdrop-blur-md p-4 rounded-none border-b border-white/10">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white/50 dark:bg-black/20 backdrop-blur-md p-4 rounded-2xl border border-white/20">
                     <div>
-                        <h1 className="text-3xl font-black text-white flex items-center gap-3 tracking-widest uppercase">
-                            <div className={`p-2 bg-transparent text-cyan-400 border border-cyan-400/50`}>
+                        <h1 className="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                            <div className={`p-2 rounded-xl text-white ${result ? (result.sentiment === 'Bullish' ? 'bg-emerald-500' : result.sentiment === 'Bearish' ? 'bg-rose-500' : 'bg-gray-500') : 'bg-primary'}`}>
                                 <BrainCircuit className="w-8 h-8" />
                             </div>
                             AI Trader Pro
@@ -571,50 +451,49 @@ export default function AIAnalysis() {
                     {result && (
                         <button
                             onClick={handleDownloadPDF}
-                            className="px-4 py-2 font-bold text-xs uppercase tracking-widest bg-transparent text-cyan-400 hover:bg-cyan-500/10 border border-cyan-400/50 transition-colors flex items-center gap-2"
+                            className="px-4 py-2 rounded-xl font-bold bg-white text-gray-700 shadow-sm border border-gray-200 hover:bg-gray-50 flex items-center gap-2"
                         >
-                            <Download size={18} /> Rapor İndir (PDF)
+                            <Download size={18} /> Download PDF
                         </button>
                     )}
                 </div>
 
                 {/* Initial Search Box */}
-                <div className={`glass-card p-6 relative z-20 transition-all duration-500 ${theme.border} ${theme.shadow}`}>
-                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"></div>
+                <div className={`bg-white dark:bg-gray-800/80 backdrop-blur-xl p-6 rounded-2xl border shadow-sm relative z-20 transition-all duration-500 ${theme.border} ${theme.shadow}`}>
                     <form onSubmit={handleAnalyze} className="flex flex-col md:flex-row gap-4">
                         <div className="relative flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                             <input
                                 type="text"
                                 value={symbol}
                                 onChange={handleSearchChange}
                                 onFocus={() => symbol && setShowSuggestions(true)}
-                                placeholder="Varlık Ara (BTC, ETH, TSLA)..."
-                                className="w-full pl-12 pr-4 py-4 rounded-none bg-black/50 border border-white/10 focus:border-cyan-400 transition-all text-lg font-mono text-white tracking-widest uppercase placeholder:text-gray-600 outline-none"
+                                placeholder="Search Asset (BTC, ETH, TSLA)..."
+                                className="w-full pl-12 pr-4 py-4 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 focus:ring-2 focus:ring-primary/50 outline-none transition-all text-lg font-bold text-gray-900 dark:text-white uppercase tracking-wider"
                             />
                             {showSuggestions && suggestions.length > 0 && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-[#050505] border border-white/10 max-h-60 overflow-y-auto z-50">
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 max-h-60 overflow-y-auto z-50">
                                     {suggestions.map((s) => (
                                         <div
                                             key={s.s}
                                             onClick={() => selectSuggestion(s.s)}
-                                            className="px-4 py-3 hover:bg-white/5 cursor-pointer flex justify-between items-center group border-b last:border-0 border-white/5"
+                                            className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer flex justify-between items-center group border-b last:border-0 border-gray-50"
                                         >
-                                            <div className="font-mono text-white tracking-widest uppercase">{s.s}</div>
-                                            <div className="text-xs text-gray-500 group-hover:text-cyan-400 transition-colors uppercase tracking-widest">{s.n}</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{s.s}</div>
+                                            <div className="text-sm text-gray-500 group-hover:text-primary transition-colors">{s.n}</div>
                                         </div>
                                     ))}
                                 </div>
                             )}
                         </div>
 
-                        <div className="flex bg-black/50 border border-white/10 p-1 self-center md:self-auto w-full md:w-auto overflow-x-auto">
+                        <div className="flex bg-gray-100 dark:bg-black/20 p-1.5 rounded-xl self-center md:self-auto w-full md:w-auto overflow-x-auto">
                             {['15m', '1h', '4h', '1d', '1wk'].map((p) => (
                                 <button
                                     key={p} type="button" onClick={() => setPeriod(p)}
-                                    className={`px-4 py-2.5 text-xs tracking-widest font-mono uppercase transition-colors ${period === p ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50' : 'text-gray-500 hover:text-gray-300 border border-transparent'}`}
+                                    className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${period === p ? 'bg-white dark:bg-gray-700 text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                                 >
-                                    {p}
+                                    {p.toUpperCase()}
                                 </button>
                             ))}
                         </div>
@@ -622,10 +501,10 @@ export default function AIAnalysis() {
                         <button
                             type="submit"
                             disabled={loading || !symbol}
-                            className="px-8 py-4 bg-transparent hover:bg-cyan-500/10 border border-cyan-400 text-cyan-400 font-bold uppercase tracking-widest text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(34,211,238,0.2)] min-w-[160px]"
+                            className="px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/25 min-w-[160px]"
                         >
                             {loading ? <RefreshCw className="animate-spin" /> : <BarChart2 />}
-                            {loading ? 'Analiz...' : 'Analiz Et'}
+                            {loading ? 'Analyze' : 'Analyze'}
                         </button>
                     </form>
                 </div>
@@ -635,36 +514,33 @@ export default function AIAnalysis() {
                     <div ref={reportRef} className="animate-in slide-in-from-bottom-4 duration-500 space-y-6">
 
                         {/* Result Bar */}
-                        <div className={`mb-6 p-4 glass-card border-none flex justify-between items-center ${theme.border} border-t`} style={{backgroundColor: 'rgba(5,5,5,0.8)'}}>
-                            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent"></div>
+                        <div className={`mb-6 p-4 rounded-xl border flex justify-between items-center bg-white/80 backdrop-blur-md ${theme.border}`}>
                             <div className="flex items-center gap-3">
-                                {/* FORCE WHITE TEXT for visibility */}
-                                <h2 className="text-3xl font-black text-white font-mono tracking-widest">{result.symbol}</h2>
-                                <span className={`text-xl font-mono tracking-widest ${parseFloat(result.change_24h) >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                {/* FORCE BLACK TEXT for visibility */}
+                                <h2 className="text-3xl font-black text-black">{result.symbol}</h2>
+                                <span className={`text-xl font-bold ${parseFloat(result.change_24h) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                     {result.change_24h}%
                                 </span>
                             </div>
-                            <div className={`px-6 py-2 font-mono tracking-widest text-xs uppercase border ${result.sentiment === 'Bullish' ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : result.sentiment === 'Bearish' ? 'bg-rose-500/10 border-rose-500/50 text-rose-400' : 'bg-gray-500/10 border-gray-500/50 text-gray-400'}`}>
+                            <div className={`px-6 py-2 rounded-lg font-bold text-white shadow-md ${result.sentiment === 'Bullish' ? 'bg-emerald-500' : result.sentiment === 'Bearish' ? 'bg-rose-500' : 'bg-gray-500'}`}>
                                 {result.sentiment.toUpperCase()} ({result.confidence}%)
                             </div>
                         </div>
 
-                        <SignalVisualizer signal={result.signal} />
-
                         {/* CHART RESIZE CONTROLS */}
                         <div className="flex justify-between items-center mb-2">
-                            <div className="text-xs font-mono uppercase tracking-widest text-gray-500">Grafik Boyutu: {chartHeight}px</div>
+                            <div className="text-sm font-bold text-gray-600">Grafik Boyutu: {chartHeight}px</div>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setChartHeight(prev => Math.max(400, prev - 100))}
-                                    className="px-3 py-1 bg-transparent border border-white/10 hover:bg-white/5 font-mono text-xs text-gray-400 transition-colors"
+                                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-lg font-bold text-gray-700 transition-all"
                                     title="Küçült"
                                 >
                                     − 100px
                                 </button>
                                 <button
                                     onClick={() => setChartHeight(prev => Math.min(1200, prev + 100))}
-                                    className="px-3 py-1 bg-transparent border border-white/10 hover:bg-white/5 font-mono text-xs text-gray-400 transition-colors"
+                                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-lg font-bold text-gray-700 transition-all"
                                     title="Büyüt"
                                 >
                                     + 100px
@@ -672,9 +548,9 @@ export default function AIAnalysis() {
                             </div>
                         </div>
 
-                        <div className={`glass-card p-0 border-none overflow-hidden ${theme.border} tradingview-chart-section`}>
+                        <div className={`bg-white p-0 rounded-2xl border shadow-lg overflow-hidden ${theme.border} tradingview-chart-section`}>
                             <ErrorBoundary>
-                                <TradingViewWidget key={result.symbol + chartHeight} symbol={result.symbol} height={chartHeight} />
+                                <TradingViewWidget symbol={result.symbol} height={chartHeight} />
                             </ErrorBoundary>
                         </div>
 
@@ -683,27 +559,27 @@ export default function AIAnalysis() {
 
                             {/* Strategy Cards */}
                             <div className="space-y-4">
-                                <div className={`glass-card p-6 border-t ${theme.border}`}>
-                                    <h3 className="text-sm font-bold tracking-widest uppercase mb-6 flex items-center gap-2 text-gray-400">
-                                        <Zap className="text-cyan-400" /> AI Alım-Satım Stratejisi
+                                <div className={`bg-white p-6 rounded-2xl border shadow-sm ${theme.border}`}>
+                                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-700">
+                                        <Zap className="text-primary" /> AI Trading Strategy
                                     </h3>
                                     {result.signal && (
                                         <div className="grid grid-cols-2 gap-4">
-                                            <div className="p-4 bg-cyan-500/5 border border-cyan-500/20">
-                                                <div className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Giriş Bölgesi</div>
-                                                <div className="text-xl font-mono text-white tracking-widest mt-1">{result.signal.entry_price || '-'}</div>
+                                            <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
+                                                <div className="text-xs font-bold text-blue-500 uppercase">Entry Zone</div>
+                                                <div className="text-xl font-black text-blue-900">{result.signal.entry_price || '-'}</div>
                                             </div>
-                                            <div className="p-4 bg-rose-500/5 border border-rose-500/20">
-                                                <div className="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Zarar Kes (Stop)</div>
-                                                <div className="text-xl font-mono text-white tracking-widest mt-1">{result.signal.stop_loss || '-'}</div>
+                                            <div className="p-4 rounded-xl bg-rose-50 border border-rose-100">
+                                                <div className="text-xs font-bold text-rose-500 uppercase">Stop Loss</div>
+                                                <div className="text-xl font-black text-rose-900">{result.signal.stop_loss || '-'}</div>
                                             </div>
-                                            <div className="p-4 bg-emerald-500/5 border border-emerald-500/20">
-                                                <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Hedef 1</div>
-                                                <div className="text-xl font-mono text-white tracking-widest mt-1">{result.signal.take_profit_1 || '-'}</div>
+                                            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+                                                <div className="text-xs font-bold text-emerald-500 uppercase">Target 1</div>
+                                                <div className="text-xl font-black text-emerald-900">{result.signal.take_profit_1 || '-'}</div>
                                             </div>
-                                            <div className="p-4 bg-emerald-500/5 border border-emerald-500/20">
-                                                <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Hedef 2</div>
-                                                <div className="text-xl font-mono text-white tracking-widest mt-1">{result.signal.take_profit_2 || '-'}</div>
+                                            <div className="p-4 rounded-xl bg-green-50 border border-green-100">
+                                                <div className="text-xs font-bold text-green-500 uppercase">Target 2</div>
+                                                <div className="text-xl font-black text-green-900">{result.signal.take_profit_2 || '-'}</div>
                                             </div>
                                         </div>
                                     )}
@@ -711,22 +587,22 @@ export default function AIAnalysis() {
 
                                 {/* Levels */}
                                 {result.resistance_levels && (
-                                    <div className={`glass-card p-6 border-t ${theme.border}`}>
-                                        <h3 className="text-sm font-bold tracking-widest uppercase mb-6 flex items-center gap-2 text-gray-400">
-                                            <Target className="text-pink-400" /> Kilit Destek & Dirençler
+                                    <div className={`bg-white p-6 rounded-2xl border shadow-sm ${theme.border}`}>
+                                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-700">
+                                            <Target className="text-primary" /> Key Support & Resistance
                                         </h3>
-                                        <div className="space-y-3 font-mono text-sm tracking-widest">
+                                        <div className="space-y-3 font-mono text-sm">
                                             {result.resistance_levels.slice().reverse().map((r, i) => (
-                                                <div key={r} className="flex justify-between text-gray-400">
-                                                    <span className="font-bold text-rose-400 uppercase">Direnç {2 - i}</span>
-                                                    <span className="text-white">${r}</span>
+                                                <div key={r} className="flex justify-between text-gray-600">
+                                                    <span className="font-bold text-rose-500">RES {2 - i}</span>
+                                                    <span>${r}</span>
                                                 </div>
                                             ))}
-                                            <div className="border-b border-white/5 my-4"></div>
+                                            <div className="border-b my-2"></div>
                                             {result.support_levels.map((r, i) => (
-                                                <div key={r} className="flex justify-between text-gray-400">
-                                                    <span className="font-bold text-emerald-400 uppercase">Destek {i + 1}</span>
-                                                    <span className="text-white">${r}</span>
+                                                <div key={r} className="flex justify-between text-gray-600">
+                                                    <span className="font-bold text-emerald-500">SUP {i + 1}</span>
+                                                    <span>${r}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -735,15 +611,15 @@ export default function AIAnalysis() {
                             </div>
 
                             {/* Detailed Text Analysis */}
-                            <div className={`glass-card p-6 border-t ${theme.border}`}>
-                                <h3 className="text-sm font-bold tracking-widest uppercase mb-6 flex items-center gap-2 text-gray-400">
-                                    <FileText className="text-purple-400" /> Detaylı Piyasa Analizi
+                            <div className={`bg-white p-6 rounded-2xl border shadow-sm ${theme.border}`}>
+                                <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-700">
+                                    <FileText className="text-primary" /> Detailed Market Insight
                                 </h3>
-                                <div className="prose prose-sm prose-invert max-w-none text-gray-300 leading-relaxed custom-scrollbar max-h-[500px] overflow-y-auto">
+                                <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed">
                                     <div dangerouslySetInnerHTML={{ __html: result.analysis }} />
                                 </div>
-                                <div className="mt-8 pt-4 border-t border-white/5 text-[10px] text-gray-500 text-center uppercase tracking-widest font-mono">
-                                    TRADXEAI YAPAY ZEKA MÜHENDİSLİĞİ İLE OLUŞTURULDU • YATIRIM TAVSİYESİ DEĞİLDİR
+                                <div className="mt-8 pt-4 border-t text-xs text-gray-400 text-center">
+                                    Generated by FinanceHub AI • Not Financial Advice • DO YOUR OWN RESEARCH
                                 </div>
                             </div>
                         </div>
@@ -755,73 +631,73 @@ export default function AIAnalysis() {
             {
                 isDrawerOpen && result && (
                     <>
-                        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setIsDrawerOpen(false)} />
-                        <div className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-[#050505] shadow-[0_0_50px_rgba(0,0,0,1)] z-50 overflow-y-auto border-l border-white/10 flex flex-col">
-                            <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+                        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" onClick={() => setIsDrawerOpen(false)} />
+                        <div className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-white shadow-2xl z-50 overflow-y-auto border-l flex flex-col">
+                            <div className="p-6 border-b flex justify-between items-center bg-gray-50">
                                 <div>
-                                    <h3 className="font-black text-xl text-cyan-400 tracking-widest uppercase">Analiz Detayları</h3>
-                                    <p className="text-[10px] font-mono tracking-widest text-gray-500 uppercase">Tam Rapor Görünümü</p>
+                                    <h3 className="font-black text-xl text-gray-900">Analysis Details</h3>
+                                    <p className="text-xs text-gray-500 uppercase">Full Breakdown</p>
                                 </div>
-                                <button onClick={() => setIsDrawerOpen(false)} className="p-2 hover:bg-white/10 text-gray-400 hover:text-white rounded-none transition-colors"><X /></button>
+                                <button onClick={() => setIsDrawerOpen(false)} className="p-2 hover:bg-gray-200 rounded-full"><X /></button>
                             </div>
 
                             <div className="p-6 space-y-8 flex-1">
                                 {/* Sentiment Block */}
-                                <div className={`p-4 border border-white/10 text-center ${result.sentiment === 'Bullish' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'}`}>
-                                    <div className="font-black text-2xl tracking-widest font-mono">{result.sentiment.toUpperCase()}</div>
-                                    <div className="text-xs font-mono tracking-widest uppercase opacity-75 mt-1">% {result.confidence} Güven Skoru</div>
+                                <div className={`p-4 rounded-xl text-center ${result.sentiment === 'Bullish' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
+                                    <div className="font-black text-2xl">{result.sentiment.toUpperCase()}</div>
+                                    <div className="text-sm font-bold opacity-75">{result.confidence}% Confidence</div>
                                 </div>
 
                                 {/* Signals Block */}
                                 <div>
-                                    <h4 className="border-b border-white/10 pb-2 mb-4 font-bold text-gray-500 text-xs uppercase tracking-widest">Aktif Sinyaller</h4>
+                                    <h4 className="border-b pb-2 mb-4 font-bold text-gray-400 text-xs uppercase tracking-widest">Active Signals</h4>
                                     <div className="space-y-3">
-                                        <div className="glass-card p-4 border-none bg-cyan-500/5 hover:border-cyan-500/30 border border-transparent transition-colors">
+                                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                             <div className="flex justify-between items-center mb-1">
-                                                <span className="text-[10px] font-bold tracking-widest text-cyan-400 uppercase">Giriş Bölgesi</span>
-                                                <Zap size={14} className="text-cyan-400" />
+                                                <span className="text-xs font-bold text-blue-500 uppercase">Entry</span>
+                                                <Zap size={14} className="text-blue-500" />
                                             </div>
-                                            <div className="text-xl font-mono text-white tracking-widest">{result.signal?.entry_price || '-'}</div>
+                                            <div className="text-xl font-black text-gray-800">{result.signal?.entry_price || '-'}</div>
                                         </div>
-                                        <div className="glass-card p-4 border-none bg-rose-500/5 hover:border-rose-500/30 border border-transparent transition-colors">
+                                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                             <div className="flex justify-between items-center mb-1">
-                                                <span className="text-[10px] font-bold tracking-widest text-rose-400 uppercase">Zarar Kes</span>
-                                                <ShieldAlert size={14} className="text-rose-400" />
+                                                <span className="text-xs font-bold text-rose-500 uppercase">Stop Loss</span>
+                                                <ShieldAlert size={14} className="text-rose-500" />
                                             </div>
-                                            <div className="text-xl font-mono text-white tracking-widest">{result.signal?.stop_loss || '-'}</div>
+                                            <div className="text-xl font-black text-gray-800">{result.signal?.stop_loss || '-'}</div>
                                         </div>
-                                        <div className="glass-card p-4 border-none bg-emerald-500/5 hover:border-emerald-500/30 border border-transparent transition-colors">
+                                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                             <div className="flex justify-between items-center mb-1">
-                                                <span className="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">Hedef 1</span>
-                                                <Target size={14} className="text-emerald-400" />
+                                                <span className="text-xs font-bold text-emerald-500 uppercase">Target 1</span>
+                                                <Target size={14} className="text-emerald-500" />
                                             </div>
-                                            <div className="text-xl font-mono text-white tracking-widest">{result.signal?.take_profit_1 || '-'}</div>
+                                            <div className="text-xl font-black text-gray-800">{result.signal?.take_profit_1 || '-'}</div>
                                         </div>
-                                        <div className="glass-card p-4 border-none bg-emerald-500/5 hover:border-emerald-500/30 border border-transparent transition-colors">
+                                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                             <div className="flex justify-between items-center mb-1">
-                                                <span className="text-[10px] font-bold tracking-widest text-emerald-400 uppercase">Hedef 2</span>
-                                                <Target size={14} className="text-emerald-400" />
+                                                <span className="text-xs font-bold text-green-500 uppercase">Target 2</span>
+                                                <Target size={14} className="text-green-500" />
                                             </div>
-                                            <div className="text-xl font-mono text-white tracking-widest">{result.signal?.take_profit_2 || '-'}</div>
+                                            <div className="text-xl font-black text-gray-800">{result.signal?.take_profit_2 || '-'}</div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Levels Block */}
                                 <div>
-                                    <h4 className="border-b border-white/10 pb-2 mb-4 font-bold text-gray-500 text-xs uppercase tracking-widest">Kilit Seviyeler</h4>
-                                    <div className="font-mono text-sm space-y-3 tracking-widest">
+                                    <h4 className="border-b pb-2 mb-4 font-bold text-gray-400 text-xs uppercase tracking-widest">Key Levels</h4>
+                                    <div className="font-mono text-sm space-y-2">
                                         {result.resistance_levels?.slice().reverse().map((r, i) => (
                                             <div key={r} className="flex justify-between items-center">
-                                                <span className="text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-1 flex items-center justify-center font-bold text-[10px] uppercase">Direnç {2 - i}</span>
-                                                <span className="font-bold text-white">${r}</span>
+                                                <span className="text-rose-500 bg-rose-50 px-2 rounded font-bold text-xs">RES {2 - i}</span>
+                                                <span className="font-bold text-gray-700">${r}</span>
                                             </div>
                                         ))}
-                                        <div className="border-b border-white/10 my-4"></div>
+                                        <div className="border-b border-dashed my-2 opacity-50"></div>
                                         {result.support_levels?.map((r, i) => (
                                             <div key={r} className="flex justify-between items-center">
-                                                <span className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 flex items-center justify-center font-bold text-[10px] uppercase">Destek {i + 1}</span>
-                                                <span className="font-bold text-white">${r}</span>
+                                                <span className="text-emerald-500 bg-emerald-50 px-2 rounded font-bold text-xs">SUP {i + 1}</span>
+                                                <span className="font-bold text-gray-700">${r}</span>
                                             </div>
                                         ))}
                                     </div>
