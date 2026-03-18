@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /ai-analysis
+Allow: /markets
+Allow: /accounts
+Allow: /calendar
+Allow: /reports
+Allow: /tools
+
+# Block internal APIs or paths if needed
+Disallow: /api/
+
+Sitemap: https://finance-20364.web.app/sitemap.xml
