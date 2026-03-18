@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wallet, TrendingUp, PiggyBank, FileText, Menu, X, LogOut, Sun, Moon, CreditCard, Languages, ArrowRightLeft, CalendarDays, Wrench, Eye, EyeOff } from 'lucide-react';
+import { LayoutDashboard, Wallet, TrendingUp, PiggyBank, FileText, Menu, X, LogOut, Sun, Moon, CreditCard, Languages, ArrowRightLeft, CalendarDays, Wrench, Eye, EyeOff, BarChart3 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { usePrivacy } from '../contexts/PrivacyContext';
