@@ -448,11 +448,11 @@ export default function AIAnalysis() {
                                             {/* Target 2 zone (green darker) */}
                                             <div className="absolute top-0 h-full bg-green-600" style={{ left: '70%', right: '0%' }} />
                                         </div>
-                                        <div className="flex justify-between text-xs mt-2 font-mono text-gray-500">
-                                            <span className="text-rose-500 font-bold">Stop: {result.signal.stop_loss}</span>
-                                            <span className="text-blue-500 font-bold">Giriş: {result.signal.entry_price}</span>
-                                            <span className="text-emerald-500 font-bold">H1: {result.signal.take_profit_1}</span>
-                                            <span className="text-green-600 font-bold">H2: {result.signal.take_profit_2}</span>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] md:text-xs mt-3 font-mono text-gray-500">
+                                            <span className="text-rose-500 font-bold truncate">Stop: {result.signal.stop_loss}</span>
+                                            <span className="text-blue-500 font-bold truncate">Giriş: {result.signal.entry_price}</span>
+                                            <span className="text-emerald-500 font-bold truncate text-right md:text-left">H1: {result.signal.take_profit_1}</span>
+                                            <span className="text-green-600 font-bold truncate text-right md:text-left">H2: {result.signal.take_profit_2}</span>
                                         </div>
                                     </div>
                                 )}
