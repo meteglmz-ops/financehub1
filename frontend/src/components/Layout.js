@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Wallet, TrendingUp, PiggyBank, FileText, Menu, X, LogOut, Sun, Moon, CreditCard, Languages, ArrowRightLeft, CalendarDays, Wrench, Eye, EyeOff } from 'lucide-react';
+import {
+  LayoutDashboard, Wallet, TrendingUp, PiggyBank, FileText, Menu, X,
+  LogOut, Sun, Moon, CreditCard, Languages, ArrowRightLeft, CalendarDays,
+  Wrench, Eye, EyeOff, BrainCircuit, ChevronRight
+} from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { usePrivacy } from '../contexts/PrivacyContext';
@@ -17,46 +21,39 @@ export default function Layout({ children }) {
   const { user, logout, authMode } = useAuth();
   const { privacyMode, togglePrivacy } = usePrivacy();
   const { t, i18n } = useTranslation();
-
-  // Legal Modal State
   const [activeLegalDoc, setActiveLegalDoc] = useState(null);
 
   const navigation = [
     { name: t('nav.dashboard'), href: '/', icon: LayoutDashboard },
     { name: t('nav.wallet'), href: '/accounts', icon: Wallet },
-    { name: 'AI Analysis', href: '/ai-analysis', icon: require('lucide-react').BrainCircuit },
+    { name: 'AI Analiz', href: '/ai-analysis', icon: BrainCircuit },
     { name: t('nav.markets'), href: '/markets', icon: TrendingUp },
     { name: t('nav.savings'), href: '/savings', icon: PiggyBank },
     { name: t('nav.transactions'), href: '/transactions', icon: ArrowRightLeft },
     { name: t('nav.subscriptions'), href: '/subscriptions', icon: CreditCard },
-    { name: 'Calendar', href: '/calendar', icon: CalendarDays },
-    { name: 'Tools', href: '/tools', icon: Wrench },
+    { name: 'Takvim', href: '/calendar', icon: CalendarDays },
+    { name: 'Araçlar', href: '/tools', icon: Wrench },
     { name: t('nav.reports'), href: '/reports', icon: FileText },
   ];
 
-  const languages = [
-    { code: 'tr', name: 'Türkçe' },
-    { code: 'en', name: 'English' },
-    { code: 'de', name: 'Deutsch' },
-    { code: 'fr', name: 'Français' },
-    { code: 'es', name: 'Español' },
-    { code: 'ru', name: 'Русский' },
-    { code: 'ar', name: 'العربية' },
-    { code: 'zh', name: '中文' },
-    { code: 'ja', name: '日本語' },
-    { code: 'it', name: 'Italiano' }
+  // Bottom nav (5 most important for mobile)
+  const mobileBottomNav = [
+    { name: 'Anasayfa', href: '/', icon: LayoutDashboard },
+    { name: 'Hesaplar', href: '/accounts', icon: Wallet },
+    { name: 'AI Analiz', href: '/ai-analysis', icon: BrainCircuit },
+    { name: 'Piyasalar', href: '/markets', icon: TrendingUp },
+    { name: 'Daha Fazla', href: null, icon: Menu, action: () => setSidebarOpen(true) },
   ];
 
   const handleLogout = () => {
     logout();
-    toast.success('Logged out successfully');
+    toast.success('Çıkış yapıldı');
     navigate('/login');
   };
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem('language', lng);
-    toast.success(`Language changed to ${languages.find(l => l.code === lng)?.name}`);
   };
 
   return (
@@ -66,57 +63,63 @@ export default function Layout({ children }) {
       <TickerTape />
 
       <div className="flex flex-1 overflow-hidden">
+        {/* Mobile overlay */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
+        {/* SIDEBAR */}
         <aside
           className={`
             fixed md:static inset-y-0 left-0 z-50
-            flex flex-col 
-            border-r border-gray-100 dark:border-cyan-500/20 
+            flex flex-col
+            border-r border-gray-100 dark:border-cyan-500/20
             bg-white dark:bg-black/95 backdrop-blur-xl shadow-2xl md:shadow-none
             transform transition-all duration-300 ease-in-out
-            ${sidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full md:translate-x-0 md:w-20 md:hover:w-72 group'}
+            ${sidebarOpen
+              ? 'translate-x-0 w-72'
+              : '-translate-x-full md:translate-x-0 md:w-20 md:hover:w-72 group'
+            }
             overflow-hidden
           `}
         >
-          {/* Header */}
-          <div className="h-20 flex items-center px-6 border-b border-gray-50 dark:border-cyan-500/20 whitespace-nowrap overflow-hidden">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 min-w-[32px] rounded-lg bg-primary flex items-center justify-center">
-                <TrendingUp className="text-white" size={20} />
+          {/* Sidebar Header */}
+          <div className="h-16 flex items-center px-4 border-b border-gray-100 dark:border-cyan-500/20 whitespace-nowrap overflow-hidden">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="w-8 h-8 min-w-[32px] rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="text-white" size={18} />
               </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-cyan-400 dark:to-purple-400 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 delay-100">
+              <h1 className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-cyan-400 dark:to-purple-400 transition-all duration-300
+                ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`}>
                 FinanceHub
               </h1>
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 ml-auto"
+              className="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 flex-shrink-0 ml-2"
             >
-              <X size={24} />
+              <X size={22} />
             </button>
           </div>
 
           {/* User Profile */}
-          <div className="p-4 pb-2">
-            <div className="p-2 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center gap-3 shadow-sm overflow-hidden whitespace-nowrap transition-all">
+          <div className="p-3">
+            <div className="p-2 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center gap-3 overflow-hidden whitespace-nowrap">
               <img
-                src={user?.avatar || "https://ui-avatars.com/api/?name=User&background=random"}
+                src={user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=random`}
                 alt={user?.name}
-                className="w-8 h-8 min-w-[32px] rounded-full ring-2 ring-white dark:ring-white/10"
+                className="w-8 h-8 min-w-[32px] rounded-full ring-2 ring-white dark:ring-white/10 flex-shrink-0"
               />
-              <div className="flex-1 min-w-0 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user?.name || 'Misafir'}</p>
+              <div className={`flex-1 min-w-0 transition-all duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`}>
+                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user?.name || 'Kullanıcı'}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
               </div>
             </div>
             {authMode === 'mock' && (
-              <div className="mt-2 px-2 text-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+              <div className={`mt-2 px-2 text-center transition-all duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`}>
                 <span className="text-[10px] font-medium px-3 py-1 bg-amber-100 text-amber-700 dark:bg-yellow-500/20 dark:text-yellow-400 rounded-full">
                   Demo Modu
                 </span>
@@ -125,115 +128,120 @@ export default function Layout({ children }) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-4 space-y-2 overflow-y-auto overflow-x-hidden">
+          <nav className="flex-1 px-2 py-3 space-y-1 overflow-y-auto overflow-x-hidden">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
               const Icon = item.icon;
               return (
                 <Link
-                  key={item.name}
+                  key={item.href}
                   to={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200
+                    flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                     whitespace-nowrap overflow-hidden
                     ${isActive
                       ? 'bg-primary/10 text-primary dark:bg-cyan-500/10 dark:text-cyan-400 shadow-sm'
                       : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                     }
                   `}
-                  title={item.name} // Tooltip for collapsed state
+                  title={item.name}
                 >
                   <Icon
-                    size={22}
-                    className={`min-w-[22px] transition-colors duration-200 ${isActive ? 'text-primary dark:text-cyan-400' : 'text-gray-400 dark:text-gray-500'}`}
+                    size={20}
+                    className={`min-w-[20px] flex-shrink-0 transition-colors ${isActive ? 'text-primary dark:text-cyan-400' : 'text-gray-400 dark:text-gray-500'}`}
                   />
-                  <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 delay-75">
+                  <span className={`transition-all duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`}>
                     {item.name}
                   </span>
                   {isActive && (
-                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary dark:bg-cyan-400 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className={`ml-auto w-1.5 h-1.5 rounded-full bg-primary dark:bg-cyan-400 flex-shrink-0 transition-opacity ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`} />
                   )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Settings / Footer */}
-          <div className="p-4 border-t border-gray-100 dark:border-cyan-500/20 space-y-2 bg-gray-50/50 dark:bg-transparent overflow-hidden">
-            {/* Privacy Toggle */}
+          {/* Sidebar Footer */}
+          <div className="p-3 border-t border-gray-100 dark:border-cyan-500/20 space-y-1 bg-gray-50/50 dark:bg-transparent overflow-hidden">
             <button
               onClick={togglePrivacy}
-              className="w-full flex items-center justify-between px-2 py-2.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:shadow-sm transition-all whitespace-nowrap"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:shadow-sm transition-all whitespace-nowrap"
             >
-              <div className="flex items-center gap-3">
-                <div className="min-w-[16px]">
-                  {privacyMode ? <EyeOff size={20} /> : <Eye size={20} />}
-                </div>
-                <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{privacyMode ? 'Değerleri Göster' : 'Değerleri Gizle'}</span>
+              <div className="min-w-[20px] flex-shrink-0">
+                {privacyMode ? <EyeOff size={20} /> : <Eye size={20} />}
               </div>
+              <span className={`transition-all duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`}>
+                {privacyMode ? 'Değerleri Göster' : 'Değerleri Gizle'}
+              </span>
             </button>
 
-            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="w-full flex items-center justify-between px-2 py-2.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:shadow-sm transition-all whitespace-nowrap"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:shadow-sm transition-all whitespace-nowrap"
             >
-              <div className="flex items-center gap-3">
-                <div className="min-w-[16px]">
-                  {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
-                </div>
-                <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{theme === 'dark' ? 'Koyu Tema' : 'Aydınlık Tema'}</span>
+              <div className="min-w-[20px] flex-shrink-0">
+                {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
               </div>
+              <span className={`transition-all duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`}>
+                {theme === 'dark' ? 'Koyu Tema' : 'Aydınlık Tema'}
+              </span>
             </button>
 
-            {/* Logout */}
             <button
               onClick={handleLogout}
-              className="w-full mt-2 flex items-center gap-3 px-2 py-2.5 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/30 whitespace-nowrap"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all whitespace-nowrap"
             >
-              <div className="min-w-[16px]">
+              <div className="min-w-[20px] flex-shrink-0">
                 <LogOut size={20} />
               </div>
-              <span className="opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{t('auth.logout')}</span>
+              <span className={`transition-all duration-300 ${sidebarOpen ? 'opacity-100' : 'opacity-0 md:group-hover:opacity-100'}`}>
+                {t('auth.logout')}
+              </span>
             </button>
           </div>
         </aside>
 
+        {/* MAIN CONTENT */}
         <main className="flex-1 overflow-y-auto relative flex flex-col">
-          <div className="md:hidden sticky top-0 z-30 bg-white/90 dark:bg-black/90 backdrop-blur-xl border-b border-gray-200 dark:border-cyan-500/20 p-4">
+          {/* Mobile top bar */}
+          <div className="md:hidden sticky top-0 z-30 bg-white/95 dark:bg-black/95 backdrop-blur-xl border-b border-gray-200 dark:border-cyan-500/20 px-4 py-3">
             <div className="flex items-center justify-between">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="text-gray-900 dark:text-white"
-              >
-                <Menu size={24} />
-              </button>
-
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="p-2 rounded-xl bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200"
+                >
+                  <Menu size={22} />
+                </button>
+                <span className="text-base font-bold text-gray-900 dark:text-white">
+                  {navigation.find(n => n.href === location.pathname)?.name || 'FinanceHub'}
+                </span>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={togglePrivacy}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-white/10"
-                  title={privacyMode ? 'Show values' : 'Hide values'}
+                  className="p-2 rounded-xl bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200"
                 >
-                  {privacyMode ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {privacyMode ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
                 <button
                   onClick={toggleTheme}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-white/10"
+                  className="p-2 rounded-xl bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200"
                 >
-                  {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                  {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="p-6 md:p-8 lg:p-12 pb-24 flex-1">
+          {/* Page content */}
+          <div className="p-4 md:p-8 lg:p-10 pb-24 md:pb-10 flex-1">
             {children}
           </div>
 
-          {/* Global Footer */}
-          <footer className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8 mt-auto">
+          {/* Footer - hidden on mobile (replaced by bottom nav) */}
+          <footer className="hidden md:block border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-6 mt-auto">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-2">
                 <span className="font-bold">FinanceHub</span>
@@ -245,29 +253,50 @@ export default function Layout({ children }) {
                 <button onClick={() => setActiveLegalDoc('legal')} className="hover:text-primary dark:hover:text-cyan-400 cursor-pointer transition-colors">Yasal Uyarı</button>
                 <button onClick={() => setActiveLegalDoc('disclaimer')} className="hover:text-primary dark:hover:text-cyan-400 cursor-pointer transition-colors">Sorumluluk Reddi</button>
               </div>
-              <div className="text-center md:text-right max-w-md opacity-75">
-                <p>Yatırım tavsiyesi değildir. Veriler gecikmeli olabilir.</p>
-                <p>Not Investment Advice. Data may be delayed.</p>
-              </div>
+              <p className="opacity-75">Yatırım tavsiyesi değildir. Veriler gecikmeli olabilir.</p>
             </div>
           </footer>
         </main>
       </div>
 
+      {/* MOBILE BOTTOM NAVIGATION BAR */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white dark:bg-black/95 border-t border-gray-200 dark:border-cyan-500/20 backdrop-blur-xl">
+        <div className="grid grid-cols-5 h-16">
+          {mobileBottomNav.map((item) => {
+            const isActive = item.href && location.pathname === item.href;
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.name}
+                onClick={item.action || (() => navigate(item.href))}
+                className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                  isActive
+                    ? 'text-primary dark:text-cyan-400'
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}
+              >
+                <Icon size={20} />
+                <span className="text-[10px] font-semibold leading-none">{item.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
       {/* Legal Modal */}
       {activeLegalDoc && (
         <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-2xl max-h-[80vh] rounded-3xl shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-white/10">
-              <h3 className="text-xl font-bold dark:text-white">{LEGAL_DOCS[activeLegalDoc]?.title}</h3>
+          <div className="bg-white dark:bg-gray-900 w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-white/10">
+              <h3 className="text-lg font-bold dark:text-white">{LEGAL_DOCS[activeLegalDoc]?.title}</h3>
               <button onClick={() => setActiveLegalDoc(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full dark:text-white">
                 <X size={20} />
               </button>
             </div>
-            <div className="p-8 overflow-y-auto custom-scrollbar prose prose-sm dark:prose-invert max-w-none">
+            <div className="p-6 overflow-y-auto custom-scrollbar prose prose-sm dark:prose-invert max-w-none">
               <div dangerouslySetInnerHTML={{ __html: LEGAL_DOCS[activeLegalDoc]?.content }} />
             </div>
-            <div className="p-6 border-t border-gray-100 dark:border-white/10 flex justify-end">
+            <div className="p-5 border-t border-gray-100 dark:border-white/10 flex justify-end">
               <button
                 onClick={() => setActiveLegalDoc(null)}
                 className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-colors"
