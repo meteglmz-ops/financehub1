@@ -53,6 +53,9 @@ function App() {
           <Route path="/calendar" element={<PrivateRoute><Layout><Calendar /></Layout></PrivateRoute>} />
           <Route path="/tools" element={<PrivateRoute><Layout><Tools /></Layout></PrivateRoute>} />
           <Route path="/ai-analysis" element={<PrivateRoute><Layout><AIAnalysis /></Layout></PrivateRoute>} />
+          {/* Fallback routes to prevent "No routes matched" errors for old cached URLs */}
+          <Route path="/dashboard" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" theme="system" />
