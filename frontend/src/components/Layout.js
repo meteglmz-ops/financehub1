@@ -52,7 +52,7 @@ export default function Layout({ children }) {
   const navigation = [
     { name: t('nav.dashboard'), href: '/', icon: LayoutDashboard },
     { name: t('nav.wallet'), href: '/accounts', icon: Wallet },
-    { name: 'AI Analysis', href: '/ai-analysis', icon: require('lucide-react').BrainCircuit },
+    { name: 'AI Analysis', href: '/ai-analysis', icon: BrainCircuit },
     { name: t('nav.markets'), href: '/markets', icon: TrendingUp },
     { name: t('nav.savings'), href: '/savings', icon: PiggyBank },
     { name: t('nav.transactions'), href: '/transactions', icon: ArrowRightLeft },
